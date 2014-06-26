@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bscheiman.Common", "bscheiman.Common.csproj", "{04EA1B5B-498E-4E34-89B7-F5B4AD174F83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04EA1B5B-498E-4E34-89B7-F5B4AD174F83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04EA1B5B-498E-4E34-89B7-F5B4AD174F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04EA1B5B-498E-4E34-89B7-F5B4AD174F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04EA1B5B-498E-4E34-89B7-F5B4AD174F83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = bscheiman.Common.csproj
+	EndGlobalSection
+EndGlobal
