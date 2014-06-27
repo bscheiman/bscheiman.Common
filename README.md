@@ -1,0 +1,1 @@
+# bscheiman.Common ([![bscheiman-oss MyGet Build Status](https://www.myget.org/BuildSource/Badge/bscheiman-oss?identifier=2cb6a8b6-3965-459c-8431-56b2f9bec941)](https://www.myget.org/))
