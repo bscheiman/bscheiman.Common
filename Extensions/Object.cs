@@ -13,14 +13,15 @@ namespace bscheiman.Common.Extensions {
         /// <returns>The query string.</returns>
         /// <param name="request">Object to reflect.</param>
         /// <param name="separator">Separator for array-based fields.</param>
-        public static string ToQueryString(this object request, string separator = ",") {
+        /// <param name="readAndWrite">Whether to use read/write properties or only read.</param>
+        public static string ToQueryString(this object request, string separator = ",", bool readAndWrite = true) {
             if (request == null)
                 throw new ArgumentNullException("request");
 
             var properties =
                 request.GetType()
                     .GetProperties()
-                    .Where(x => x.CanRead && x.CanWrite)
+                    .Where(x => readAndWrite ? x.CanRead && x.CanWrite : x.CanRead)
                     .Where(x => x.GetValue(request, null) != null)
                     .ToDictionary(x => x.Name, x => x.GetValue(request, null));
 

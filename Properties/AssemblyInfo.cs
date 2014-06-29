@@ -1,7 +1,4 @@
-﻿#region
-using System.Reflection;
-
-#endregion
+﻿using System.Reflection;
 
 [assembly: AssemblyTitle("bscheiman.Common")]
 [assembly: AssemblyDescription("")]
