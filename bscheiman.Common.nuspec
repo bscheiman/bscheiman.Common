@@ -9,4 +9,13 @@
      <description>Useful extensions/tools/utils I keep using all over the place. Hit me up (@bscheiman) if you need help.</description>
      <language>en-US</language>
    </metadata>
+   
+   <files>
+	   <file src="bin\Release\bscheiman.Common.dll" target="lib\net40\bscheiman.Common.dll" />
+	   <file src="bin\Release\bscheiman.Common.xml" target="lib\net40\bscheiman.Common.xml" />
+	   <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoAndroid\bscheiman.Common.dll" />
+	   <file src="bin\Release\bscheiman.Common.xml" target="lib\MonoAndroid\bscheiman.Common.xml" />
+	   <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoTouch\bscheiman.Common.dll" />
+	   <file src="bin\Release\bscheiman.Common.xml" target="lib\MonoTouch\bscheiman.Common.xml" />
+   </files>
 </package>
