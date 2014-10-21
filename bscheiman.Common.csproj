@@ -30,6 +30,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Byte.cs" />
     <Compile Include="Extensions\IEnumerable.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
