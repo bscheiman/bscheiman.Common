@@ -85,6 +85,16 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
+        /// Generates a SHA256 hash from the specified string
+        /// </summary>
+        /// <returns>SHA256 hash, uppercase.</returns>
+        /// <param name="str">String.</param>
+        public static string ToSHA256(this string str) {
+            using (var sha = SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(str))).Replace("-", "").ToUpper();
+        }
+
+        /// <summary>
         /// Truncate the specified string according to maxLength.
         /// </summary>
         /// <param name="value">Value.</param>
