@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -31,6 +32,16 @@ namespace bscheiman.Common.Extensions {
                 bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
 
             return bytes;
+        }
+
+        /// <summary>
+        /// Converts a JSON string to its object counterpart
+        /// </summary>
+        /// <typeparam name="T">Type to deserialize</typeparam>
+        /// <param name="str">JSON string</param>
+        /// <returns>A plain ol' .NET object</returns>
+        public static T FromJson<T>(this string str) {
+            return JsonConvert.DeserializeObject<T>(str);
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -44,6 +45,15 @@ namespace bscheiman.Common.Extensions {
                 values.Add(p.Key, p.Value.ToString());
 
             return values;
+        }
+
+        /// <summary>
+        /// Returns a JSON version of the string
+        /// </summary>
+        /// <param name="obj">Object to serialize</param>
+        /// <returns>JSON string</returns>
+        public static string ToJson(this object obj) {
+            return JsonConvert.SerializeObject(obj);
         }
 
         /// <summary>
