@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using bscheiman.Common.Objects;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -13,7 +14,7 @@ using log4net.Util;
 
 #endregion
 
-namespace bscheiman.Common.Helpers {
+namespace bscheiman.Common.Util {
     public static class Log {
         internal static string Caller = string.Format("[{0}] ", Process.GetCurrentProcess().ProcessName);
         internal static ILog Logger = LogManager.GetLogger(typeof (Log));
@@ -133,11 +134,5 @@ namespace bscheiman.Common.Helpers {
             hierarchy.Configured = true;
             Initialized = true;
         }
-    }
-
-    public class LoggerParameters {
-        public bool Debug { get; set; }
-        public string LogEntriesToken { get; set; }
-        public string Pattern { get; set; }
     }
 }
