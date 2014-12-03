@@ -50,6 +50,7 @@
     <Compile Include="Extensions\DayExtensions.cs" />
     <Compile Include="Extensions\IEnumerable.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
+    <Compile Include="Util\DateUtil.cs" />
     <Compile Include="Util\Logger.cs" />
     <Compile Include="Objects\LoggerParameters.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
