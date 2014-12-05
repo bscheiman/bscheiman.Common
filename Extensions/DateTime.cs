@@ -5,7 +5,7 @@ using System;
 
 namespace bscheiman.Common.Extensions {
     public static partial class Extensions {
-        internal static DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        internal static DateTime Epoch = new DateTime(1970, 1, 1);
 
         /// <summary>
         /// Returns the specified DateTime as epoch (seconds since Jan 1, 1970)
@@ -13,7 +13,7 @@ namespace bscheiman.Common.Extensions {
         /// <returns>Epoch</returns>
         /// <param name="dt">DateTime to use</param>
         public static long ToEpoch(this DateTime dt) {
-            return Convert.ToInt64((dt - Epoch).TotalSeconds);
+            return (long) (DateTime.UtcNow - Epoch).TotalSeconds;
         }
     }
 }
