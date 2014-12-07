@@ -44,12 +44,16 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Byte.cs" />
     <Compile Include="Extensions\DayExtensions.cs" />
     <Compile Include="Extensions\IEnumerable.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
+    <Compile Include="Extensions\XAttribute.cs" />
+    <Compile Include="Extensions\XElement.cs" />
     <Compile Include="Util\DateUtil.cs" />
     <Compile Include="Util\Logger.cs" />
     <Compile Include="Objects\LoggerParameters.cs" />
