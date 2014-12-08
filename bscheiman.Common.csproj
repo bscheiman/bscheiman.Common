@@ -51,7 +51,9 @@
     <Compile Include="Extensions\Byte.cs" />
     <Compile Include="Extensions\DayExtensions.cs" />
     <Compile Include="Extensions\IEnumerable.cs" />
+    <Compile Include="Extensions\Static.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
+    <Compile Include="Extensions\HttpWebRequest.cs" />
     <Compile Include="Extensions\XAttribute.cs" />
     <Compile Include="Extensions\XElement.cs" />
     <Compile Include="Util\DateUtil.cs" />
