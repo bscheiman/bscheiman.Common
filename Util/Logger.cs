@@ -3,80 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using bscheiman.Common.Loggers;
 using bscheiman.Common.Objects;
-using log4net;
-using log4net.Appender;
-using log4net.Config;
-using log4net.Core;
-using log4net.Layout;
-using log4net.Repository.Hierarchy;
-using log4net.Util;
 
 #endregion
 
 namespace bscheiman.Common.Util {
     public static class Log {
-        internal static string Caller = string.Format("[{0}] ", Process.GetCurrentProcess().ProcessName);
-        internal static ILog Logger = LogManager.GetLogger(typeof (Log));
+        internal static string Caller = Process.GetCurrentProcess().ProcessName;
+        internal static readonly List<ILogger> Loggers = new List<ILogger>();
 
         internal static LoggerParameters DefaultConfig {
             get {
                 return new LoggerParameters {
-                    Pattern = "[%level%] %m%n",
-                    LogEntriesToken = "",
-                    Debug = true
+                    LogEntriesToken = ""
                 };
             }
         }
 
         private static bool Initialized { get; set; }
-
-        #region Logging functions
-        public static void Debug(string str, params object[] objs) {
-            if (!Initialized)
-                Setup();
-
-            str = string.Format("{0}{1}", Caller, str);
-
-            Logger.DebugFormat(str, objs);
-        }
-
-        public static void Error(string str, params object[] objs) {
-            if (!Initialized)
-                Setup();
-
-            str = string.Format("{0}{1}", Caller, str);
-
-            Logger.ErrorFormat(str, objs);
-        }
-
-        public static void Fatal(string str, Exception e) {
-            if (!Initialized)
-                Setup();
-
-            str = string.Format("{0}{1}", Caller, str);
-
-            Logger.Fatal(str, e);
-        }
-
-        public static void Info(string str, params object[] objs) {
-            if (!Initialized)
-                Setup();
-
-            str = string.Format("{0}{1}", Caller, str);
-
-            Logger.InfoFormat(str, objs);
-        }
-
-        public static void Warn(string str, params object[] objs) {
-            str = Caller + str;
-
-            Logger.WarnFormat(str, objs);
-        }
-        #endregion
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
 
         public static void Setup() {
             Setup(DefaultConfig);
@@ -89,50 +34,75 @@ namespace bscheiman.Common.Util {
                 return;
             }
 
-            var hierarchy = (Hierarchy) LogManager.GetRepository();
-            hierarchy.Root.RemoveAllAppenders();
+            if (GetConsoleWindow() != IntPtr.Zero || Process.GetProcessesByName("linqpad").Length > 0)
+                Loggers.Add(new ConsoleLogger());
 
-            var patternLayout = new PatternLayout {
-                ConversionPattern = parms.Pattern
-            };
-            patternLayout.ActivateOptions();
+            Loggers.Add(new TraceLogger());
 
-            var appenders = new List<AppenderSkeleton>();
+            if (!string.IsNullOrEmpty(parms.LogEntriesToken))
+                Loggers.Add(new LogEntriesLogger(parms.LogEntriesToken));
 
-            if (GetConsoleWindow() != IntPtr.Zero) {
-                appenders.Add(new TraceAppender {
-                    Layout = patternLayout
-                });
-            } else {
-                appenders.Add(new ConsoleAppender {
-                    Layout = patternLayout
-                });
-            }
+            foreach (var l in Loggers)
+                l.Setup();
 
-            if (!string.IsNullOrEmpty(parms.LogEntriesToken)) {
-                appenders.Add(new LogentriesAppender {
-                    Layout = patternLayout,
-                    UseSsl = false,
-                    ImmediateFlush = true,
-                    Debug = parms.Debug,
-                    Token = parms.LogEntriesToken,
-                    UseHttpPut = false
-                });
-            }
-
-            hierarchy.Root.Level = Level.All;
-
-            LogLog.InternalDebugging = parms.Debug;
-
-            foreach (var app in appenders) {
-                BasicConfigurator.Configure(app);
-                app.ActivateOptions();
-
-                hierarchy.Root.AddAppender(app);
-            }
-
-            hierarchy.Configured = true;
             Initialized = true;
         }
+
+        public static void Teardown() {
+            foreach (var l in Loggers)
+                l.Teardown();
+        }
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        #region Logging functions
+        public static void Debug(string str, params object[] objs) {
+            if (!Initialized)
+                Setup();
+
+            str = string.Format("«DEBUG/{0}» {1}", Caller, string.Format(str, objs));
+
+            foreach (var l in Loggers)
+                l.Debug(str);
+        }
+
+        public static void Error(string str, params object[] objs) {
+            if (!Initialized)
+                Setup();
+
+            str = string.Format("«ERROR/{0}» {1}", Caller, string.Format(str, objs));
+
+            foreach (var l in Loggers)
+                l.Error(str);
+        }
+
+        public static void Fatal(string str, Exception e) {
+            if (!Initialized)
+                Setup();
+
+            str = string.Format("«FATAL/{0}» {1}: {2}", Caller, string.Format(str, e));
+
+            foreach (var l in Loggers)
+                l.Fatal(str);
+        }
+
+        public static void Info(string str, params object[] objs) {
+            if (!Initialized)
+                Setup();
+
+            str = string.Format("«INFO/{0}» {1}", Caller, string.Format(str, objs));
+
+            foreach (var l in Loggers)
+                l.Info(str);
+        }
+
+        public static void Warn(string str, params object[] objs) {
+            str = string.Format("«WARN/{0}» {1}", Caller, string.Format(str, objs));
+
+            foreach (var l in Loggers)
+                l.Warn(str);
+        }
+        #endregion
     }
 }
