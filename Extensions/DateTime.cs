@@ -13,7 +13,7 @@ namespace bscheiman.Common.Extensions {
         /// <returns>Epoch</returns>
         /// <param name="dt">DateTime to use</param>
         public static long ToEpoch(this DateTime dt) {
-            return (long) (DateTime.UtcNow - Epoch).TotalSeconds;
+            return (long) (dt - Epoch).TotalSeconds;
         }
     }
 }
