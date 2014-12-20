@@ -6,7 +6,12 @@ using bscheiman.Common.Extensions;
 
 namespace bscheiman.Common.Util {
     public static class DateUtil {
-        public static long Now = DateTime.UtcNow.ToEpoch();
-        public static DateTime NowDt = DateTime.UtcNow;
+        public static long Now {
+            get { return DateTime.UtcNow.ToEpoch(); }
+        }
+
+        public static DateTime NowDt {
+            get { return DateTime.UtcNow; }
+        }
     }
 }
