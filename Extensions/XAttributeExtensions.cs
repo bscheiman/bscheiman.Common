@@ -5,7 +5,7 @@ using System.Xml.Linq;
 #endregion
 
 namespace bscheiman.Common.Extensions {
-    public static partial class Extensions {
+    public static class XAttributeExtensions {
         public static string ValueOrDefault(this XAttribute attr) {
             return ValueOrDefault(attr, string.Empty);
         }

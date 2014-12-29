@@ -4,7 +4,7 @@ using System;
 #endregion
 
 namespace bscheiman.Common.Extensions {
-    public static partial class Extensions {
+    public static class EnumExtensions {
         /// <summary>
         /// Gets the first matching attribute of type T
         /// </summary>

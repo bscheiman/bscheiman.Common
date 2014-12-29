@@ -1,14 +1,16 @@
 ﻿#region
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 #endregion
 
 namespace bscheiman.Common.Extensions {
-    public static partial class Extensions {
+    public static class StringExtensions {
         /// <summary>
         /// Attempts to parse the specified string as a member of enum
         /// </summary>
@@ -17,6 +19,20 @@ namespace bscheiman.Common.Extensions {
         /// <typeparam name="T">Type of enum</typeparam>
         public static T AsEnum<T>(this string str) {
             return (T) Enum.Parse(typeof (T), str, true);
+        }
+
+        public static string FormatWith(this string str, params object[] args) {
+            return string.Format(str, args);
+        }
+
+        public static string FormatWith<T>(this string format, Func<T, object> select, params object[] args) where T : class {
+            for (int i = 0; i < args.Length; ++i) {
+                var x = args[i] as T;
+                if (x != null)
+                    args[i] = select(x);
+            }
+
+            return string.Format(format, args);
         }
 
         /// <summary>
@@ -44,6 +60,65 @@ namespace bscheiman.Common.Extensions {
             return JsonConvert.DeserializeObject<T>(str);
         }
 
+        public static bool IsLike(this string s, string wildcardPattern) {
+            if (s == null || String.IsNullOrEmpty(wildcardPattern))
+                return false;
+
+            string regexPattern =
+                string.Format("^{0}$", Regex.Escape(wildcardPattern))
+                      .Replace(@"\[!", "[^")
+                      .Replace(@"\[", "[")
+                      .Replace(@"\]", "]")
+                      .Replace(@"\?", ".")
+                      .Replace(@"\*", ".*")
+                      .Replace(@"\#", @"\d");
+
+            try {
+                return Regex.IsMatch(s, regexPattern);
+            } catch (ArgumentException ex) {
+                throw new ArgumentException(String.Format("Invalid pattern: {0}", wildcardPattern), ex);
+            }
+        }
+
+        public static bool IsNullOrEmpty(this string str) {
+            return string.IsNullOrEmpty(str);
+        }
+
+        public static bool MatchesWildcard(this string text, string pattern) {
+            int it = 0;
+
+            while (text.CharAt(it) != 0 && pattern.CharAt(it) != '*') {
+                if (pattern.CharAt(it) != text.CharAt(it) && pattern.CharAt(it) != '?')
+                    return false;
+
+                it++;
+            }
+
+            int cp = 0;
+            int mp = 0;
+            int ip = it;
+
+            while (text.CharAt(it) != 0) {
+                if (pattern.CharAt(ip) == '*') {
+                    if (pattern.CharAt(++ip) == 0)
+                        return true;
+                    mp = ip;
+                    cp = it + 1;
+                } else if (pattern.CharAt(ip) == text.CharAt(it) || pattern.CharAt(ip) == '?') {
+                    ip++;
+                    it++;
+                } else {
+                    ip = mp;
+                    it = cp++;
+                }
+            }
+
+            while (pattern.CharAt(ip) == '*')
+                ip++;
+
+            return pattern.CharAt(ip) == 0;
+        }
+
         /// <summary>
         /// Removes the diacritics from a UTF8 string. Use with caution: in Spanish, año is *VERY* different from ano.
         /// </summary>
@@ -62,6 +137,24 @@ namespace bscheiman.Common.Extensions {
             }
 
             return (sb.ToString().Normalize(NormalizationForm.FormC));
+        }
+
+        public static IEnumerable<string> SplitInParts(this string s, int partLength) {
+            if (s == null)
+                throw new ArgumentNullException("s");
+            if (partLength <= 0)
+                throw new ArgumentException("Part length has to be positive.", "partLength");
+
+            for (int i = 0; i < s.Length; i += partLength)
+                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        }
+
+        public static string[] SplitRe(this string value, string regexPattern, RegexOptions options = RegexOptions.None) {
+            return Regex.Split(value, regexPattern, options);
+        }
+
+        public static T To<T>(this IConvertible obj) {
+            return (T) Convert.ChangeType(obj, typeof (T));
         }
 
         /// <summary>
@@ -115,6 +208,10 @@ namespace bscheiman.Common.Extensions {
                 return value;
 
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
+
+        internal static char CharAt(this string s, int index) {
+            return index < s.Length ? s[index] : '\0';
         }
     }
 }

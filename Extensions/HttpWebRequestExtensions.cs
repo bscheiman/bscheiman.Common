@@ -7,14 +7,25 @@ using System.Reflection;
 #endregion
 
 namespace bscheiman.Common.Extensions {
-    public static partial class Extensions {
+    public static class HttpWebRequestExtensions {
+        private static readonly Dictionary<string, PropertyInfo> HeaderProperties =
+            new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
+
         private static readonly string[] RestrictedHeaders = {
             "Accept", "Connection", "Content-Length", "Content-Type", "Date", "Expect", "Host", "If-Modified-Since", "Range", "Referer",
             "Transfer-Encoding", "User-Agent", "Proxy-Connection"
         };
 
-        private static readonly Dictionary<string, PropertyInfo> HeaderProperties =
-            new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
+        static HttpWebRequestExtensions() {
+            var type = typeof (HttpWebRequest);
+
+            foreach (string header in RestrictedHeaders) {
+                string propertyName = header.Replace("-", "");
+                var headerProperty = type.GetProperty(propertyName);
+
+                HeaderProperties[header] = headerProperty;
+            }
+        }
 
         public static void SetRawHeader(this HttpWebRequest request, string name, string value) {
             if (HeaderProperties.ContainsKey(name))

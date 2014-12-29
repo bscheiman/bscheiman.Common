@@ -6,6 +6,8 @@ using bscheiman.Common.Extensions;
 
 namespace bscheiman.Common.Util {
     public static class DateUtil {
+        public static readonly DateTime Epoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1, 0, 0, 0, 0), DateTimeKind.Utc);
+
         public static long Now {
             get { return DateTime.UtcNow.ToEpoch(); }
         }

@@ -1,10 +1,12 @@
 ﻿#region
 using System;
+using System.Collections.Generic;
+using bscheiman.Common.Util;
 
 #endregion
 
 namespace bscheiman.Common.Extensions {
-    public static partial class Extensions {
+    public static class IntExtensions {
         /// <summary>
         /// Returns number of days in seconds.
         /// </summary>
@@ -19,7 +21,7 @@ namespace bscheiman.Common.Extensions {
         /// <returns>DateTime object</returns>
         /// <param name="l">Epoch</param>
         public static DateTime FromEpoch(this int l) {
-            return Epoch.AddSeconds(l);
+            return DateUtil.Epoch.AddSeconds(l);
         }
 
         /// <summary>
@@ -38,12 +40,53 @@ namespace bscheiman.Common.Extensions {
             return i * 60.Seconds();
         }
 
+        public static IEnumerable<int> Range(this int n) {
+            for (int i = 0; i < n; i++)
+                yield return i;
+        }
+
         /// <summary>
         /// Returns number of seconds. IN SECONDS. Best extension ever.
         /// </summary>
         /// <param name="i">Seconds</param>
         public static long Seconds(this int i) {
             return i;
+        }
+
+        /// <summary>
+        /// Returns the specified number of bytes as gigabytes
+        /// </summary>
+        /// <returns>Expressed gigabytes</returns>
+        /// <param name="l">Number of bytes</param>
+        public static float ToGb(this int l) {
+            return l.ToMb() / 1024f;
+        }
+
+        /// <summary>
+        /// Returns the specified number of bytes as kilobytes
+        /// </summary>
+        /// <returns>Expressed kilobytes</returns>
+        /// <param name="l">Number of bytes</param>
+        public static float ToKb(this int l) {
+            return l / 1024f;
+        }
+
+        /// <summary>
+        /// Returns the specified number of bytes as megabytes
+        /// </summary>
+        /// <returns>Expressed megabytes</returns>
+        /// <param name="l">Number of bytes</param>
+        public static float ToMb(this int l) {
+            return l.ToKb() / 1024f;
+        }
+
+        /// <summary>
+        /// Returns the specified number of bytes as terabytes
+        /// </summary>
+        /// <returns>Expressed terabytes</returns>
+        /// <param name="l">Number of bytes</param>
+        public static float ToTb(this int l) {
+            return l.ToGb() / 1024f;
         }
 
         /// <summary>

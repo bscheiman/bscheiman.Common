@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>bscheiman.Common</RootNamespace>
     <AssemblyName>bscheiman.Common</AssemblyName>
+    <NuGetPackageImportStamp>8d5af04d</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,37 +28,63 @@
     <DocumentationFile>bin\Release\bscheiman.Common.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EmptyStringGuard">
+      <HintPath>packages\EmptyStringGuard.Fody.1.0.6.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\EmptyStringGuard.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Scalpel">
+      <HintPath>packages\Scalpel.Fody.1.0.2.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Scalpel.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SwallowExceptions">
+      <HintPath>packages\SwallowExceptions.Fody.0.0.3\Lib\portable-net4+sl5+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\SwallowExceptions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="ToString">
+      <HintPath>packages\ToString.Fody.1.7.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\ToString.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\Byte.cs" />
-    <Compile Include="Extensions\DayExtensions.cs" />
-    <Compile Include="Extensions\IEnumerable.cs" />
-    <Compile Include="Extensions\Static.cs" />
-    <Compile Include="Extensions\TimeExtensions.cs" />
-    <Compile Include="Extensions\HttpWebRequest.cs" />
-    <Compile Include="Extensions\XAttribute.cs" />
-    <Compile Include="Extensions\XElement.cs" />
+    <Compile Include="AsyncErrorHandler.cs" />
+    <Compile Include="Extensions\BoolExtensions.cs" />
+    <Compile Include="Extensions\ByteExtensions.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\EventHandlerExtensions.cs" />
+    <Compile Include="Extensions\FluentOrderingExtensions.cs" />
+    <Compile Include="Extensions\ICollectionExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\HttpWebRequestExtensions.cs" />
+    <Compile Include="Extensions\RandomExtensions.cs" />
+    <Compile Include="Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Extensions\XAttributeExtensions.cs" />
+    <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="Loggers\LogEntriesLogger.cs" />
     <Compile Include="Loggers\TraceLogger.cs" />
+    <Compile Include="Tests\StringExtensionsTests.cs" />
     <Compile Include="Util\DateUtil.cs" />
     <Compile Include="Util\Logger.cs" />
     <Compile Include="Objects\LoggerParameters.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\String.cs" />
-    <Compile Include="Extensions\Enum.cs" />
-    <Compile Include="Extensions\DateTime.cs" />
-    <Compile Include="Extensions\Int.cs" />
-    <Compile Include="Extensions\Long.cs" />
-    <Compile Include="Extensions\Object.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\IntExtensions.cs" />
+    <Compile Include="Extensions\LongExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\Ignore.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
   </ItemGroup>
@@ -66,4 +93,14 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <Import Project="packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('packages\Fody.1.26.4\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.1.26.4\build\Fody.targets'))" />
+  </Target>
 </Project>
