@@ -14,15 +14,7 @@ namespace bscheiman.Common.Extensions {
         public static string GetString(this byte[] buffer, Encoding encoding) {
             if (buffer == null || buffer.Length == 0)
                 return "";
-
-            /*
-    		EF BB BF	UTF-8 
-    		FF FE UTF-16	little endian 
-    		FE FF UTF-16	big endian 
-    		FF FE 00 00	UTF-32, little endian 
-    		00 00 FE FF	UTF-32, big-endian 
-    	 */
-
+            
             if (buffer.Length >= 3 && buffer[0] == 0xef && buffer[1] == 0xbb && buffer[2] == 0xbf)
                 encoding = Encoding.UTF8;
             else if (buffer.Length >= 2 && buffer[0] == 0xfe && buffer[1] == 0xff)
