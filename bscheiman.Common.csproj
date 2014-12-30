@@ -68,6 +68,7 @@
     <Compile Include="Extensions\ExceptionExtensions.cs" />
     <Compile Include="Extensions\FluentOrderingExtensions.cs" />
     <Compile Include="Extensions\ICollectionExtensions.cs" />
+    <Compile Include="Extensions\IConvertibleExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\HttpWebRequestExtensions.cs" />
     <Compile Include="Extensions\RandomExtensions.cs" />

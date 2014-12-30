@@ -9,8 +9,19 @@ using NUnit.Framework;
 namespace bscheiman.Common.Tests {
     [TestFixture]
     public class StringExtensionsTests {
+        internal static string NullString = null;
+
         [Test]
         public void AsEnum() {
+            Assert.Throws<ArgumentException>(() => "asdasd".AsEnum<Importance>());
+            Assert.Throws<ArgumentException>(() => "asdasd".AsEnum<string>());
+            Assert.Throws<ArgumentNullException>(() => NullString.AsEnum<Importance>());
+
+            Assert.AreEqual(Importance.None, "None".AsEnum<Importance>());
+            Assert.AreEqual(Importance.Trivial, "trivial".AsEnum<Importance>());
+            Assert.AreEqual(Importance.Regular, "reGuLar".AsEnum<Importance>());
+            Assert.AreEqual(Importance.Important, "Important".AsEnum<Importance>());
+            Assert.AreEqual(Importance.Critical, "Critical".AsEnum<Importance>());
         }
 
         [Test]
@@ -20,20 +31,42 @@ namespace bscheiman.Common.Tests {
 
         [Test]
         public void FromJson() {
+            string json = @"{  ""firstName"":""John"", ""lastName"":""Doe"" }";
+            var obj = json.FromJson<Person>();
+
+            Assert.AreEqual("John", obj.FirstName);
+            Assert.AreEqual("Doe", obj.LastName);
+            Assert.IsNotNull(obj);
         }
 
         [Test]
-        public void GetBytes() {
+        public void GetBytes([Values("lalala", "ñasdasd", "123123", "")] string str) {
+            foreach (var encoding in new[] {
+                Encoding.ASCII, Encoding.Default, Encoding.UTF32, Encoding.UTF7, Encoding.UTF8, Encoding.Unicode
+            }) {
+                Assert.Throws<ArgumentNullException>(() => NullString.GetBytes());
+                Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(encoding));
+                Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(null));
+
+                Assert.AreEqual(encoding.GetBytes(str), str.GetBytes(encoding));
+                Assert.AreEqual(Encoding.Default.GetBytes(str), str.GetBytes());
+            }
         }
 
         [Test]
         public void IsLike() {
+            Assert.Throws<ArgumentNullException>(() => NullString.IsLike(""));
+            Assert.Throws<ArgumentNullException>(() => "".IsLike(NullString));
+            Assert.Throws<ArgumentException>(() => "".IsLike(@"\X\z"));
+
+            Assert.IsTrue("b55scheiman".IsLike(@"b55.*?"));
+            Assert.IsFalse("b55scheiman".IsLike(@"b7.*?"));
         }
 
         [Test]
         public void IsNullOrEmpty() {
-            Assert.IsTrue(((string) null).IsNull());
-            Assert.IsTrue(((string) null).IsNullOrEmpty());
+            Assert.IsTrue(NullString.IsNull());
+            Assert.IsTrue(NullString.IsNullOrEmpty());
             Assert.IsTrue("".IsNullOrEmpty());
 
             Assert.IsFalse("".IsNull());
@@ -45,7 +78,7 @@ namespace bscheiman.Common.Tests {
         public void MatchesWildcard() {
             string str = "the quick brown fox jumps over the lazy dog's back";
 
-            Assert.Throws<ArgumentNullException>(() => ((string) null).MatchesWildcard("*cat*"));
+            Assert.Throws<ArgumentNullException>(() => NullString.MatchesWildcard("*cat*"));
 
             Assert.IsFalse(str.MatchesWildcard("*cat*"));
             Assert.IsFalse(str.MatchesWildcard("dog"));
@@ -54,14 +87,14 @@ namespace bscheiman.Common.Tests {
 
         [Test]
         public void RemoveDiacritics() {
-            Assert.Throws<ArgumentNullException>(() => ((string) null).RemoveDiacritics());
+            Assert.Throws<ArgumentNullException>(() => NullString.RemoveDiacritics());
 
             Assert.AreEqual("über".RemoveDiacritics(), "uber");
         }
 
         [Test]
         public void SplitRe() {
-            Assert.Throws<ArgumentNullException>(() => ((string) null).SplitRe(""));
+            Assert.Throws<ArgumentNullException>(() => NullString.SplitRe(""));
             Assert.Throws<ArgumentNullException>(() => "".SplitRe(null));
 
             Assert.AreEqual(new[] {
@@ -70,12 +103,9 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test]
-        public void To() {
-        }
-
-        [Test]
         public void ToHexString() {
-            Assert.Throws<ArgumentNullException>(() => ((string) null).FromHexString().ToHexString(true, 4));
+            Assert.Throws<ArgumentNullException>(() => NullString.FromHexString().ToHexString(true, 4));
+            Assert.Throws<FormatException>(() => "ABCDEFGHUHKKJNSADFADFZX".FromHexString().ToHexString(true, 4));
 
             Assert.AreEqual("1234 5678 9ABC", "123456789aBC".FromHexString().ToHexString(true, 4));
             Assert.AreEqual("1234:5678:9ABC", "123456789aBC".FromHexString().ToHexString(true, 4, ":"));
@@ -83,7 +113,8 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test, Sequential]
-        public void ToHMAC256Bytes([Values("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", "4a656665", "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+        public void ToHMAC256Bytes(
+            [Values("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", "4a656665", "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 )] string key,
@@ -100,8 +131,7 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test, Sequential]
-        public void ToHMAC256String(
-            [Values("Jefe")] string key,
+        public void ToHMAC256String([Values("Jefe")] string key,
             [Values("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")] string digest,
             [Values("what do ya want for nothing?")] string msg) {
             Assert.AreEqual(digest.ToUpper(), msg.ToHMAC256(key));
@@ -146,6 +176,19 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual("12...", "1234567890".Truncate(5, "..."));
             Assert.AreEqual("12...", "12345".Truncate(5, "..."));
             Assert.AreEqual("", "".Truncate(5, "..."));
+        }
+
+        private enum Importance {
+            None,
+            Trivial,
+            Regular,
+            Important,
+            Critical
+        };
+
+        private class Person {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
     }
 }

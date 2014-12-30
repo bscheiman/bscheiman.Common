@@ -66,26 +66,20 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static byte[] GetBytes(this string str, Encoding encoding) {
+            str.ThrowIfNull("str");
+            encoding.ThrowIfNull("encoding");
+
             return encoding.GetBytes(str);
         }
 
-        public static bool IsLike(this string s, string wildcardPattern) {
-            if (s == null || String.IsNullOrEmpty(wildcardPattern))
-                return false;
-
-            string regexPattern =
-                "^{0}$".FormatWith(Regex.Escape(wildcardPattern))
-                       .Replace(@"\[!", "[^")
-                       .Replace(@"\[", "[")
-                       .Replace(@"\]", "]")
-                       .Replace(@"\?", ".")
-                       .Replace(@"\*", ".*")
-                       .Replace(@"\#", @"\d");
-
+        public static bool IsLike(this string s, string regexPattern) {
+            s.ThrowIfNull("s");
+            regexPattern.ThrowIfNull("regexPattern");
+            
             try {
                 return Regex.IsMatch(s, regexPattern);
             } catch (ArgumentException ex) {
-                throw new ArgumentException("Invalid pattern: {0}".FormatWith(wildcardPattern), ex);
+                throw new ArgumentException("Invalid pattern: {0}".FormatWith(regexPattern), ex);
             }
         }
 
@@ -175,10 +169,7 @@ namespace bscheiman.Common.Extensions {
             return str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static T To<T>(this IConvertible obj) {
-            return (T) Convert.ChangeType(obj, typeof (T));
-        }
-
+        
         /// <summary>
         /// Generates an HMAC SHA256 string from the specified string and key
         /// </summary>
@@ -186,6 +177,9 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">Source string.</param>
         /// <param name="key">Key.</param>
         public static string ToHMAC256(this string str, string key) {
+            str.ThrowIfNull("str");
+            key.ThrowIfNull("key");
+
             using (var hmac = new HMACSHA256(key.GetBytes(Encoding.UTF8)))
                 return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
@@ -197,6 +191,9 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">Source string.</param>
         /// <param name="key">Key.</param>
         public static string ToHMAC256(this string str, byte[] key) {
+            str.ThrowIfNull("str");
+            key.ThrowIfNull("key");
+
             using (var hmac = new HMACSHA256(key))
                 return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
@@ -207,6 +204,8 @@ namespace bscheiman.Common.Extensions {
         /// <returns>MD5 hash, uppercase.</returns>
         /// <param name="str">String.</param>
         public static string ToMD5(this string str) {
+            str.ThrowIfNull("str");
+
             using (var sha = MD5.Create())
                 return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
@@ -217,6 +216,8 @@ namespace bscheiman.Common.Extensions {
         /// <returns>SHA1 hash, uppercase.</returns>
         /// <param name="str">String.</param>
         public static string ToSHA1(this string str) {
+            str.ThrowIfNull("str");
+
             using (var sha = SHA1.Create())
                 return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
@@ -227,6 +228,8 @@ namespace bscheiman.Common.Extensions {
         /// <returns>SHA256 hash, uppercase.</returns>
         /// <param name="str">String.</param>
         public static string ToSHA256(this string str) {
+            str.ThrowIfNull("str");
+
             using (var sha = SHA256.Create())
                 return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
@@ -247,6 +250,8 @@ namespace bscheiman.Common.Extensions {
         }
 
         internal static char CharAt(this string s, int index) {
+            s.ThrowIfNull("s");
+
             return index < s.Length ? s[index] : '\0';
         }
     }
