@@ -8,6 +8,8 @@
     <RootNamespace>bscheiman.Common</RootNamespace>
     <AssemblyName>bscheiman.Common</AssemblyName>
     <NuGetPackageImportStamp>8d5af04d</NuGetPackageImportStamp>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -26,11 +29,16 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <DocumentationFile>bin\Release\bscheiman.Common.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EmptyStringGuard">
       <HintPath>packages\EmptyStringGuard.Fody.1.0.6.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\EmptyStringGuard.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
@@ -44,9 +52,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -56,11 +61,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncErrorHandler.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
+    <Compile Include="Extensions\ExceptionExtensions.cs" />
     <Compile Include="Extensions\FluentOrderingExtensions.cs" />
     <Compile Include="Extensions\ICollectionExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
@@ -73,6 +78,11 @@
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="Loggers\LogEntriesLogger.cs" />
     <Compile Include="Loggers\TraceLogger.cs" />
+    <Compile Include="Tests\BoolExtensionsTest.cs" />
+    <Compile Include="Tests\DateTimeExtensionsTests.cs" />
+    <Compile Include="Tests\DateUtilTests.cs" />
+    <Compile Include="Tests\IgnoreTests.cs" />
+    <Compile Include="Tests\LoggingTests.cs" />
     <Compile Include="Tests\StringExtensionsTests.cs" />
     <Compile Include="Util\DateUtil.cs" />
     <Compile Include="Util\Logger.cs" />
@@ -86,7 +96,6 @@
     <Compile Include="Extensions\LongExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\Ignore.cs" />
-    <Compile Include="Helpers\HashHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

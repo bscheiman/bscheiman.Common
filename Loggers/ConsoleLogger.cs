@@ -4,7 +4,7 @@ using System;
 #endregion
 
 namespace bscheiman.Common.Loggers {
-    public class ConsoleLogger : ILogger {
+    internal class ConsoleLogger : ILogger {
         public void Debug(string str) {
             Console.WriteLine(str);
         }

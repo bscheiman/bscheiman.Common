@@ -4,37 +4,52 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using bscheiman.Common.Extensions;
 
 #endregion
 
 namespace bscheiman.Common.Loggers {
-    public class LogEntriesLogger : ILogger {
-        public BlockingCollection<string> Queue = new BlockingCollection<string>();
-        public string Token { get; set; }
+    internal class LogEntriesLogger : ILogger {
+        internal const int Port = 80;
+        internal const string Server = "data.logentries.com";
+        public static BlockingCollection<string> Queue = new BlockingCollection<string>();
         public bool Running { get; set; }
+        public string Token { get; set; }
 
         public LogEntriesLogger(string token) {
             Token = token;
         }
 
         public void Debug(string str) {
-            foreach (var s in str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                Queue.Add(string.Format("{0} {1}", Token, str));
+            if (!Running)
+                return;
+
+            foreach (string s in str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray()))
+                Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
         public void Error(string str) {
-            foreach (var s in str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                Queue.Add(string.Format("{0} {1}", Token, str));
+            if (!Running)
+                return;
+
+            foreach (string s in str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray()))
+                Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
         public void Fatal(string str) {
-            foreach (var s in str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                Queue.Add(string.Format("{0} {1}", Token, str));
+            if (!Running)
+                return;
+
+            foreach (string s in str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray()))
+                Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
         public void Info(string str) {
-            foreach (var s in str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                Queue.Add(string.Format("{0} {1}", Token, str));
+            if (!Running)
+                return;
+
+            foreach (string s in str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray()))
+                Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
         public void Setup() {
@@ -42,7 +57,7 @@ namespace bscheiman.Common.Loggers {
 
             new Thread(SendMessages) {
                 Name = "LogEntries Background",
-                IsBackground = true
+                IsBackground = false
             }.Start();
         }
 
@@ -53,27 +68,30 @@ namespace bscheiman.Common.Loggers {
         }
 
         public void Warn(string str) {
-            foreach (var s in str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                Queue.Add(string.Format("{0} {1}", Token, str));
+            if (!Running)
+                return;
+
+            foreach (string s in str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray()))
+                Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
         internal void SendMessages() {
-            try {
-                using (var client = new TcpClient("data.logentries.com", 80)) {
-                    client.NoDelay = true;
+            //try {
+            using (var client = new TcpClient(Server, Port)) {
+                client.NoDelay = true;
 
-                    using (var stream = client.GetStream())
-                    using (var writer = new StreamWriter(stream)) {
-                        foreach (var str in Queue.GetConsumingEnumerable()) {
-                            writer.WriteLine(str);
-                            writer.Flush();
-                        }
+                using (var stream = client.GetStream())
+                using (var writer = new StreamWriter(stream)) {
+                    foreach (string str in Queue.GetConsumingEnumerable()) {
+                        writer.WriteLine(str);
+                        writer.Flush();
                     }
                 }
-            } catch {
-                Thread.Sleep(5000);
-                SendMessages();
             }
+            //} catch {
+            //    Thread.Sleep(2500);
+            //    SendMessages();
+            //}
         }
     }
 }

@@ -57,9 +57,19 @@ namespace bscheiman.Common.Extensions {
             return obj;
         }
 
-        public static void ThrowIfArgumentIsNull<T>(this T obj, string parameterName) where T : class {
+        public static void ThrowIf<T>(this T obj, bool fail, string error, string parameterName) {
+            if (fail)
+                throw new ArgumentException(parameterName);
+        }
+
+        public static void ThrowIfNull<T>(this T obj, string parameterName) where T : class {
             if (obj == null)
-                throw new ArgumentNullException(parameterName + " is not allowed to be null");
+                throw new ArgumentNullException(parameterName);
+        }
+
+        public static void ThrowUnless<T>(this T obj, bool success, string error, string parameterName) {
+            if (!success)
+                throw new ArgumentException(parameterName);
         }
 
         public static bool ToBool(this string s) {
@@ -117,7 +127,7 @@ namespace bscheiman.Common.Extensions {
 
                 if (!valueElemType.IsPrimitive && valueElemType != typeof (string))
                     continue;
-                
+
                 var enumerable = properties[key] as IEnumerable;
                 properties[key] = string.Join(separator, enumerable.Cast<object>());
             }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 #endregion
 
 namespace bscheiman.Common.Loggers {
-    public class TraceLogger : ILogger {
+    internal class TraceLogger : ILogger {
         public void Debug(string str) {
             Trace.TraceInformation(str);
         }

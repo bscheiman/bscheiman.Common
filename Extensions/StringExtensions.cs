@@ -18,21 +18,16 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">String to parse, case insensitive.</param>
         /// <typeparam name="T">Type of enum</typeparam>
         public static T AsEnum<T>(this string str) {
+            str.ThrowIfNull("str");
+
             return (T) Enum.Parse(typeof (T), str, true);
         }
 
         public static string FormatWith(this string str, params object[] args) {
+            str.ThrowIfNull("str");
+            args.ThrowIfNull("args");
+
             return string.Format(str, args);
-        }
-
-        public static string FormatWith<T>(this string format, Func<T, object> select, params object[] args) where T : class {
-            for (int i = 0; i < args.Length; ++i) {
-                var x = args[i] as T;
-                if (x != null)
-                    args[i] = select(x);
-            }
-
-            return string.Format(format, args);
         }
 
         /// <summary>
@@ -41,13 +36,15 @@ namespace bscheiman.Common.Extensions {
         /// <returns>The hex string.</returns>
         /// <param name="str">String to convert.</param>
         public static byte[] FromHexString(this string str) {
-            int numberChars = str.Length;
-            var bytes = new byte[numberChars / 2];
+            str.ThrowIfNull("str");
 
-            for (int i = 0; i < numberChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+            int outputLength = str.Length / 2;
+            var output = new byte[outputLength];
 
-            return bytes;
+            for (int i = 0; i < outputLength; i++)
+                output[i] = Convert.ToByte(str.Substring(i * 2, 2), 16);
+
+            return output;
         }
 
         /// <summary>
@@ -57,7 +54,19 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">JSON string</param>
         /// <returns>A plain ol' .NET object</returns>
         public static T FromJson<T>(this string str) {
+            str.ThrowIfNull("str");
+
             return JsonConvert.DeserializeObject<T>(str);
+        }
+
+        public static byte[] GetBytes(this string str) {
+            str.ThrowIfNull("str");
+
+            return str.GetBytes(Encoding.Default);
+        }
+
+        public static byte[] GetBytes(this string str, Encoding encoding) {
+            return encoding.GetBytes(str);
         }
 
         public static bool IsLike(this string s, string wildcardPattern) {
@@ -65,18 +74,18 @@ namespace bscheiman.Common.Extensions {
                 return false;
 
             string regexPattern =
-                string.Format("^{0}$", Regex.Escape(wildcardPattern))
-                      .Replace(@"\[!", "[^")
-                      .Replace(@"\[", "[")
-                      .Replace(@"\]", "]")
-                      .Replace(@"\?", ".")
-                      .Replace(@"\*", ".*")
-                      .Replace(@"\#", @"\d");
+                "^{0}$".FormatWith(Regex.Escape(wildcardPattern))
+                       .Replace(@"\[!", "[^")
+                       .Replace(@"\[", "[")
+                       .Replace(@"\]", "]")
+                       .Replace(@"\?", ".")
+                       .Replace(@"\*", ".*")
+                       .Replace(@"\#", @"\d");
 
             try {
                 return Regex.IsMatch(s, regexPattern);
             } catch (ArgumentException ex) {
-                throw new ArgumentException(String.Format("Invalid pattern: {0}", wildcardPattern), ex);
+                throw new ArgumentException("Invalid pattern: {0}".FormatWith(wildcardPattern), ex);
             }
         }
 
@@ -85,6 +94,9 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static bool MatchesWildcard(this string text, string pattern) {
+            text.ThrowIfNull("text");
+            pattern.ThrowIfNull("pattern");
+
             int it = 0;
 
             while (text.CharAt(it) != 0 && pattern.CharAt(it) != '*') {
@@ -125,6 +137,8 @@ namespace bscheiman.Common.Extensions {
         /// <returns>Diacritic-less string.</returns>
         /// <param name="input">String to modify.</param>
         public static string RemoveDiacritics(this string input) {
+            input.ThrowIfNull("input");
+
             string stFormD = input.Normalize(NormalizationForm.FormD);
             int len = stFormD.Length;
             var sb = new StringBuilder();
@@ -136,21 +150,29 @@ namespace bscheiman.Common.Extensions {
                     sb.Append(stFormD[i]);
             }
 
-            return (sb.ToString().Normalize(NormalizationForm.FormC));
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         public static IEnumerable<string> SplitInParts(this string s, int partLength) {
-            if (s == null)
-                throw new ArgumentNullException("s");
-            if (partLength <= 0)
-                throw new ArgumentException("Part length has to be positive.", "partLength");
+            s.ThrowIfNull("s");
+            partLength.ThrowIf(partLength <= 0, "Part length has to be positive.", "partLength");
 
             for (int i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
 
         public static string[] SplitRe(this string value, string regexPattern, RegexOptions options = RegexOptions.None) {
+            value.ThrowIfNull("value");
+            regexPattern.ThrowIfNull("regexPattern");
+
             return Regex.Split(value, regexPattern, options);
+        }
+
+        public static IEnumerable<string> SplitRemoveEmptyEntries(this string str, char[] separator) {
+            str.ThrowIfNull("str");
+            separator.ThrowIfNull("separator");
+
+            return str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
 
         public static T To<T>(this IConvertible obj) {
@@ -164,8 +186,19 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">Source string.</param>
         /// <param name="key">Key.</param>
         public static string ToHMAC256(this string str, string key) {
-            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
-                return BitConverter.ToString(hmac.ComputeHash(Encoding.UTF8.GetBytes(str))).Replace("-", "").ToUpper();
+            using (var hmac = new HMACSHA256(key.GetBytes(Encoding.UTF8)))
+                return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+        }
+
+        /// <summary>
+        /// Generates an HMAC SHA256 string from the specified string and key
+        /// </summary>
+        /// <returns>Hashed string, uppercase.</returns>
+        /// <param name="str">Source string.</param>
+        /// <param name="key">Key.</param>
+        public static string ToHMAC256(this string str, byte[] key) {
+            using (var hmac = new HMACSHA256(key))
+                return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -175,7 +208,7 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">String.</param>
         public static string ToMD5(this string str) {
             using (var sha = MD5.Create())
-                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(str))).Replace("-", "").ToUpper();
+                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -185,7 +218,7 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">String.</param>
         public static string ToSHA1(this string str) {
             using (var sha = SHA1.Create())
-                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(str))).Replace("-", "").ToUpper();
+                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -195,7 +228,7 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">String.</param>
         public static string ToSHA256(this string str) {
             using (var sha = SHA256.Create())
-                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(str))).Replace("-", "").ToUpper();
+                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -203,11 +236,14 @@ namespace bscheiman.Common.Extensions {
         /// </summary>
         /// <param name="value">Value.</param>
         /// <param name="maxLength">Max length.</param>
-        public static string Truncate(this string value, int maxLength) {
+        /// <param name="append">Chars to append.</param>
+        public static string Truncate(this string value, int maxLength, string append = "") {
+            maxLength.ThrowIf(maxLength <= 0, "maxLength has to be positive.", "maxLength");
+
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+            return value.Length <= maxLength - append.Length ? value : value.Substring(0, maxLength - append.Length) + append;
         }
 
         internal static char CharAt(this string s, int index) {

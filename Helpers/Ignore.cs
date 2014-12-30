@@ -11,7 +11,7 @@ namespace bscheiman.Common.Helpers {
         /// <param name="act">Action</param>
         /// <param name="def">Default value</param>
         /// <typeparam name="T">Type parameter</typeparam>
-        public static T Exception<T>(Func<T> act, T def) {
+        public static T Exception<T>(Func<T> act, T def = default(T)) {
             try {
                 return act();
             } catch {
