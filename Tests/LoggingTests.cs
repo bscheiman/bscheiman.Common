@@ -1,6 +1,5 @@
 ﻿#region
 using System;
-using bscheiman.Common.Loggers;
 using bscheiman.Common.Objects;
 using bscheiman.Common.Util;
 using NUnit.Framework;
@@ -23,6 +22,12 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test]
+        public void DoubleSetup() {
+            Setup();
+            Setup();
+        }
+
+        [Test]
         public void Error() {
             Assert.Throws<ArgumentNullException>(() => Log.Error(null));
             Assert.DoesNotThrow(() => Log.Error("LoggingTests.Error"));
@@ -40,12 +45,6 @@ namespace bscheiman.Common.Tests {
             Assert.DoesNotThrow(() => Log.Fatal("LoggingTests.Fatal Format {0}", new Exception()));
             Assert.DoesNotThrow(() => Log.Fatal(new Exception()));
             Assert.Throws<ArgumentNullException>(() => Log.Fatal("LoggingTests.Fatal Format {0}", null));
-        }
-
-        [Test]
-        public void DoubleSetup() {
-            Setup();
-            Setup();
         }
 
         [Test]

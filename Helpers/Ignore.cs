@@ -20,7 +20,7 @@ namespace bscheiman.Common.Helpers {
         }
 
         /// <summary>
-        /// Ignores any exception. All those try/catch
+        /// Ignores any exception.
         /// </summary>
         /// <param name="act">Action to execute</param>
         public static void Exception(Action act) {

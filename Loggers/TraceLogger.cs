@@ -1,10 +1,15 @@
 ﻿#region
 using System.Diagnostics;
+using bscheiman.Common.Objects;
 
 #endregion
 
 namespace bscheiman.Common.Loggers {
     internal class TraceLogger : ILogger {
+        public bool CanUse(LoggerParameters parms) {
+            return true;
+        }
+
         public void Debug(string str) {
             Trace.TraceInformation(str);
         }
@@ -21,7 +26,7 @@ namespace bscheiman.Common.Loggers {
             Trace.TraceInformation(str);
         }
 
-        public void Setup() {
+        public void Setup(LoggerParameters parms) {
         }
 
         public void Teardown() {

@@ -10,7 +10,7 @@ namespace bscheiman.Common.Extensions {
             return ValueOrDefault(attr, string.Empty);
         }
 
-        public static T ValueOrDefault<T>(this XAttribute attr, T defaultValue) {
+        public static T ValueOrDefault<T>(this XAttribute attr, T defaultValue = default(T)) {
             if (attr == null)
                 return defaultValue;
 

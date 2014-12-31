@@ -75,12 +75,16 @@ namespace bscheiman.Common.Extensions {
         public static bool IsLike(this string s, string regexPattern) {
             s.ThrowIfNull("s");
             regexPattern.ThrowIfNull("regexPattern");
-            
+
             try {
                 return Regex.IsMatch(s, regexPattern);
             } catch (ArgumentException ex) {
                 throw new ArgumentException("Invalid pattern: {0}".FormatWith(regexPattern), ex);
             }
+        }
+
+        public static bool IsNotNullOrEmpty(this string str) {
+            return !string.IsNullOrEmpty(str);
         }
 
         public static bool IsNullOrEmpty(this string str) {
@@ -169,7 +173,6 @@ namespace bscheiman.Common.Extensions {
             return str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
 
-        
         /// <summary>
         /// Generates an HMAC SHA256 string from the specified string and key
         /// </summary>

@@ -1,5 +1,7 @@
 ﻿#region
 using System;
+using System.ComponentModel;
+using bscheiman.Common.Helpers;
 
 #endregion
 
@@ -17,6 +19,10 @@ namespace bscheiman.Common.Extensions {
             var attributes = memInfo[0].GetCustomAttributes(typeof (T), false);
 
             return (attributes.Length > 0) ? (T) attributes[0] : null;
+        }
+
+        public static string GetDescription(this Enum enumVal) {
+            return Ignore.Exception(() => enumVal.GetAttributeOfType<DescriptionAttribute>().Description, "");
         }
     }
 }

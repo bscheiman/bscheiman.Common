@@ -6,13 +6,13 @@ using System.Threading;
 
 namespace bscheiman.Common.Helpers {
     public static class RandomHelper {
-        internal static int SeedCounter = new Random().Next();
         [ThreadStatic] private static Random _rng;
+        private static int _seedCounter = new Random().Next();
 
         public static Random Instance {
             get {
                 if (_rng == null) {
-                    int seed = Interlocked.Increment(ref SeedCounter);
+                    int seed = Interlocked.Increment(ref _seedCounter);
 
                     _rng = new Random(seed);
                 }

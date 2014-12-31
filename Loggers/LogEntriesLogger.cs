@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using bscheiman.Common.Extensions;
+using bscheiman.Common.Objects;
 
 #endregion
 
@@ -16,8 +17,8 @@ namespace bscheiman.Common.Loggers {
         public bool Running { get; set; }
         public string Token { get; set; }
 
-        public LogEntriesLogger(string token) {
-            Token = token;
+        public bool CanUse(LoggerParameters parms) {
+            return parms.LogEntriesToken.IsNotNullOrEmpty();
         }
 
         public void Debug(string str) {
@@ -52,7 +53,8 @@ namespace bscheiman.Common.Loggers {
                 Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
-        public void Setup() {
+        public void Setup(LoggerParameters parms) {
+            Token = parms.LogEntriesToken;
             Running = true;
 
             new Thread(SendMessages) {

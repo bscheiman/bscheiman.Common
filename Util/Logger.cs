@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using bscheiman.Common.Extensions;
 using bscheiman.Common.Loggers;
@@ -149,16 +150,15 @@ namespace bscheiman.Common.Util {
                 return;
             }
 
-            if (GetConsoleWindow() != IntPtr.Zero || Process.GetProcessesByName("linqpad").Length > 0)
-                Loggers.Add(new ConsoleLogger());
-
-            Loggers.Add(new TraceLogger());
-
-            if (!string.IsNullOrEmpty(parms.LogEntriesToken))
-                Loggers.Add(new LogEntriesLogger(parms.LogEntriesToken));
+            foreach (
+                var logger in
+                    typeof (ILogger).GetImplementations()
+                                    .Select(type => Activator.CreateInstance(type) as ILogger)
+                                    .Where(logger => logger != null && logger.CanUse(parms)))
+                Loggers.Add(logger);
 
             foreach (var l in Loggers)
-                l.Setup();
+                l.Setup(parms);
 
             Initialized = true;
         }

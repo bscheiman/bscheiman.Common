@@ -62,7 +62,7 @@ namespace bscheiman.Common.Extensions {
                 throw new ArgumentException(parameterName);
         }
 
-        public static void ThrowIfNull<T>(this T obj, string parameterName) where T : class {
+        public static void ThrowIfNull<T>(this T obj, string parameterName) {
             if (obj == null)
                 throw new ArgumentNullException(parameterName);
         }

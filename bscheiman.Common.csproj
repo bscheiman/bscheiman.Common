@@ -64,6 +64,7 @@
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Tests\DictionaryExtensionsTests.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\ExceptionExtensions.cs" />
     <Compile Include="Extensions\FluentOrderingExtensions.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Extensions\HttpWebRequestExtensions.cs" />
     <Compile Include="Extensions\RandomExtensions.cs" />
     <Compile Include="Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\XAttributeExtensions.cs" />
     <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
@@ -84,6 +86,16 @@
     <Compile Include="Tests\DateUtilTests.cs" />
     <Compile Include="Tests\IgnoreTests.cs" />
     <Compile Include="Tests\LoggingTests.cs" />
+    <Compile Include="Tests\IConvertibleExtensionsTests.cs" />
+    <Compile Include="Tests\ExceptionExtensionsTests.cs" />
+    <Compile Include="Tests\IntExtensionsTests.cs" />
+    <Compile Include="Tests\StringBuilderExtensionsTests.cs" />
+    <Compile Include="Tests\XAttributeExtensionsTests.cs" />
+    <Compile Include="Tests\XElementExtensionsTests.cs" />
+    <Compile Include="Tests\EnumExtensionTests.cs" />
+    <Compile Include="Tests\ICollectionExtensionsTests.cs" />
+    <Compile Include="Tests\LongExtensionsTests.cs" />
+    <Compile Include="Tests\RandomExtensionTests.cs" />
     <Compile Include="Tests\StringExtensionsTests.cs" />
     <Compile Include="Util\DateUtil.cs" />
     <Compile Include="Util\Logger.cs" />
