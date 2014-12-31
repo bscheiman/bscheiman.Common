@@ -17,6 +17,17 @@ namespace bscheiman.Common.Extensions {
             return item as T;
         }
 
+        public static bool Between<T>(this T target, T start, T end) where T : IComparable {
+            target.ThrowIfNull("target");
+            start.ThrowIfNull("start");
+            end.ThrowIfNull("end");
+
+            if (start.CompareTo(end) == 1)
+                return target.CompareTo(end) >= 0 && target.CompareTo(start) <= 0;
+
+            return target.CompareTo(start) >= 0 && target.CompareTo(end) <= 0;
+        }
+
         public static string GetMemberName<T, TResult>(this T anyObject, Expression<Func<T, TResult>> expression) {
             return ((MemberExpression) expression.Body).Member.Name;
         }

@@ -13,6 +13,11 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
+            action.ThrowIfNull("action");
+
+            if (source == null)
+                return;
+
             foreach (var item in source)
                 action(item);
         }
@@ -24,6 +29,8 @@ namespace bscheiman.Common.Extensions {
         /// <param name="list">Source list.</param>
         /// <returns>Random element</returns>
         public static T GetRandomElement<T>(this IEnumerable<T> list) {
+            list.ThrowIfNull("list");
+
             var tmp = list.ToList();
             int count = tmp.Count();
 
@@ -35,11 +42,11 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static string Join<T>(this IEnumerable<T> collection, Func<T, string> func, string separator) {
-            return string.Join(separator, collection.Select(func).ToArray());
+            return collection.IsNullOrEmpty() ? string.Empty : string.Join(separator, collection.Select(func).ToArray());
         }
 
-        public static string Join<T>(this IEnumerable<T> src, string separator) {
-            return string.Join(separator, src);
+        public static string Join<T>(this IEnumerable<T> src, string separator = "") {
+            return src.IsNullOrEmpty() ? string.Empty : string.Join(separator, src);
         }
     }
 }

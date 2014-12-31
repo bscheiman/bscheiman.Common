@@ -18,15 +18,11 @@ namespace bscheiman.Common.Extensions {
         private const double AlphanumericProbabilityNumericAny = 10.0 / 62.0;
         private const double AlphanumericProbabilityNumericCased = 10.0 / 36.0;
 
-        public static bool NextBool(this Random random, double probability) {
+        public static bool NextBool(this Random random, double probability = 0.5) {
             return random.NextDouble() <= probability;
         }
 
-        public static bool NextBool(this Random random) {
-            return random.NextDouble() <= 0.5;
-        }
-
-        public static char NextChar(this Random random, CharType mode) {
+        public static char NextChar(this Random random, CharType mode = CharType.AlphanumericAny) {
             switch (mode) {
                 case CharType.AlphabeticAny:
                     return random.NextAlphabeticChar();
@@ -36,9 +32,6 @@ namespace bscheiman.Common.Extensions {
 
                 case CharType.AlphabeticUpper:
                     return random.NextAlphabeticChar(true);
-
-                case CharType.AlphanumericAny:
-                    return random.NextAlphanumericChar();
 
                 case CharType.AlphanumericLower:
                     return random.NextAlphanumericChar(false);
@@ -52,10 +45,6 @@ namespace bscheiman.Common.Extensions {
                 default:
                     return random.NextAlphanumericChar();
             }
-        }
-
-        public static char NextChar(this Random random) {
-            return random.NextChar(CharType.AlphanumericAny);
         }
 
         public static DateTime NextDateTime(this Random random, DateTime minValue, DateTime maxValue) {
@@ -75,17 +64,15 @@ namespace bscheiman.Common.Extensions {
             if (!double.IsInfinity(difference))
                 return minValue + (random.NextDouble() * difference);
 
-            // to avoid evaluating to Double.Infinity, we split the range into two halves:
             double halfDifference = (maxValue * 0.5) - (minValue * 0.5);
 
-            // 50/50 chance of returning a value from the first or second half of the range
             return random.NextBool()
                 ? minValue + (random.NextDouble() * halfDifference)
                 : (minValue + halfDifference) + (random.NextDouble() * halfDifference);
         }
 
         public static string NextString(this Random random, int numChars, CharType mode) {
-            char[] chars = new char[numChars];
+            var chars = new char[numChars];
 
             for (int i = 0; i < numChars; ++i)
                 chars[i] = random.NextChar(mode);

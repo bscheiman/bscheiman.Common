@@ -64,6 +64,7 @@
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Tests\ByteExtensionsTests.cs" />
     <Compile Include="Tests\DictionaryExtensionsTests.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\ExceptionExtensions.cs" />
@@ -84,6 +85,9 @@
     <Compile Include="Tests\BoolExtensionsTest.cs" />
     <Compile Include="Tests\DateTimeExtensionsTests.cs" />
     <Compile Include="Tests\DateUtilTests.cs" />
+    <Compile Include="Tests\HttpWebRequestExtensionsTests.cs" />
+    <Compile Include="Tests\FluentOrderingExtensionsTests.cs" />
+    <Compile Include="Tests\IEnumerableExtensionsTests.cs" />
     <Compile Include="Tests\IgnoreTests.cs" />
     <Compile Include="Tests\LoggingTests.cs" />
     <Compile Include="Tests\IConvertibleExtensionsTests.cs" />

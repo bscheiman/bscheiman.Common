@@ -138,6 +138,12 @@ namespace bscheiman.Common.Util {
         }
 
         public static void Setup() {
+            if (Initialized) {
+                Debug("Already initialized...");
+
+                return;
+            }
+
             Setup(DefaultConfig);
         }
 
@@ -150,11 +156,10 @@ namespace bscheiman.Common.Util {
                 return;
             }
 
-            foreach (
-                var logger in
-                    typeof (ILogger).GetImplementations()
-                                    .Select(type => Activator.CreateInstance(type) as ILogger)
-                                    .Where(logger => logger != null && logger.CanUse(parms)))
+            foreach (var logger in
+                typeof (ILogger).GetImplementations()
+                                .Select(type => Activator.CreateInstance(type) as ILogger)
+                                .Where(logger => logger != null && logger.CanUse(parms)))
                 Loggers.Add(logger);
 
             foreach (var l in Loggers)

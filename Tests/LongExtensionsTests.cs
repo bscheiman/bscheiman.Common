@@ -1,4 +1,6 @@
 ﻿#region
+using System;
+using bscheiman.Common.Extensions;
 using bscheiman.Common.Util;
 using NUnit.Framework;
 
@@ -10,25 +12,14 @@ namespace bscheiman.Common.Tests {
 
     [TestFixture]
     public class LongExtensionsTests {
+        internal static long Zero = 0L;
+
         [Test]
         public void FromEpoch() {
-            Assert.AreEqual(DateUtil.Now, 0);
-        }
+            Assert.AreEqual(DateUtil.Epoch, Zero.FromEpoch());
+            Assert.AreEqual(DateUtil.Epoch.ToEpoch(), Zero.FromEpoch().ToEpoch());
 
-        [Test]
-        public void ToGb() {
-        }
-
-        [Test]
-        public void ToKb() {
-        }
-
-        [Test]
-        public void ToMb() {
-        }
-
-        [Test]
-        public void ToTb() {
+            Assert.AreEqual(DateTime.SpecifyKind(new DateTime(2014, 12, 31, 19, 0, 0, 0), DateTimeKind.Utc), 1420052400.FromEpoch());
         }
     }
 
