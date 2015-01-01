@@ -1,5 +1,6 @@
 ﻿#region
 using System;
+using System.Globalization;
 using System.Text;
 using bscheiman.Common.Extensions;
 using NUnit.Framework;
@@ -103,6 +104,58 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test]
+        public void SplitRemoveEmptyEntries() {
+            string str = "hey\r\nhi\r\n\r\n\r\nhowdy";
+            string str2 = "hey-hi---howdy";
+
+            Assert.Throws<ArgumentNullException>(() => ((string) null).SplitRemoveEmptyEntries());
+            Assert.Throws<ArgumentNullException>(() => "".SplitRemoveEmptyEntries(null));
+
+            Assert.AreEqual(new[] {
+                "hey", "hi", "howdy"
+            }, str.SplitRemoveEmptyEntries());
+            Assert.AreEqual(new[] {
+                "hey", "hi", "howdy"
+            }, str2.SplitRemoveEmptyEntries('-'));
+        }
+
+        [Test]
+        public void ToBool() {
+            Assert.IsTrue("1".ToBool());
+            Assert.IsTrue("true".ToBool());
+            Assert.IsTrue("True".ToBool());
+            Assert.IsTrue("TRUE".ToBool());
+            Assert.IsTrue("Y".ToBool());
+            Assert.IsTrue("T".ToBool());
+
+            Assert.IsFalse("".ToBool());
+            Assert.IsFalse("0".ToBool());
+            Assert.IsFalse("false".ToBool());
+            Assert.IsFalse("False".ToBool());
+            Assert.IsFalse("FALSE".ToBool());
+            Assert.IsFalse("N".ToBool());
+            Assert.IsFalse("F".ToBool());
+        }
+
+        [Test]
+        public void ToDecimal() {
+            Assert.AreEqual(0M, "0".ToDecimal());
+            Assert.AreEqual(0M, "-".ToDecimal());
+            Assert.AreEqual(0M, "".ToDecimal());
+            Assert.AreEqual(decimal.MaxValue, decimal.MaxValue.ToString(CultureInfo.InvariantCulture).ToDecimal());
+            Assert.AreEqual(decimal.MinValue, decimal.MinValue.ToString(CultureInfo.InvariantCulture).ToDecimal());
+        }
+
+        [Test]
+        public void ToDouble() {
+            Assert.AreEqual(0d, "0".ToDouble());
+            Assert.AreEqual(0d, "-".ToDouble());
+            Assert.AreEqual(0d, "".ToDouble());
+            Assert.AreEqual(30495d, "30495".ToDouble());
+            Assert.AreEqual(-30495d, "-30495".ToDouble());
+        }
+
+        [Test]
         public void ToHexString() {
             Assert.Throws<ArgumentNullException>(() => NullString.FromHexString().ToHexString(true, 4));
             Assert.Throws<FormatException>(() => "ABCDEFGHUHKKJNSADFADFZX".FromHexString().ToHexString(true, 4));
@@ -137,6 +190,24 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual(digest.ToUpper(), msg.ToHMAC256(key));
         }
 
+        [Test]
+        public void ToInt32() {
+            Assert.AreEqual(0, "0".ToInt32());
+            Assert.AreEqual(0, "-".ToInt32());
+            Assert.AreEqual(0, "".ToInt32());
+            Assert.AreEqual(Int32.MaxValue, Int32.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt32());
+            Assert.AreEqual(Int32.MinValue, Int32.MinValue.ToString(CultureInfo.InvariantCulture).ToInt32());
+        }
+
+        [Test]
+        public void ToInt64() {
+            Assert.AreEqual(0, "0".ToInt64());
+            Assert.AreEqual(0, "-".ToInt64());
+            Assert.AreEqual(0, "".ToInt64());
+            Assert.AreEqual(Int64.MaxValue, Int64.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt64());
+            Assert.AreEqual(Int64.MinValue, Int64.MinValue.ToString(CultureInfo.InvariantCulture).ToInt64());
+        }
+
         [Test, Sequential]
         public void ToMD5(
             [Values("d41d8cd98f00b204e9800998ecf8427e", "0cc175b9c0f1b6a831c399e269772661", "900150983cd24fb0d6963f7d28e17f72",
@@ -168,6 +239,15 @@ namespace bscheiman.Common.Tests {
                 "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")] string
                 source) {
             Assert.AreEqual(digest.ToUpper(), source.ToSHA256());
+        }
+
+        [Test]
+        public void ToSingle() {
+            Assert.AreEqual(0f, "0".ToSingle());
+            Assert.AreEqual(0f, "-".ToSingle());
+            Assert.AreEqual(0f, "".ToSingle());
+            Assert.AreEqual(30495f, "30495".ToSingle());
+            Assert.AreEqual(-30495f, "-30495".ToSingle());
         }
 
         [Test]

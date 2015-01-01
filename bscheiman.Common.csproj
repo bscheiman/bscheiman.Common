@@ -85,6 +85,7 @@
     <Compile Include="Tests\BoolExtensionsTest.cs" />
     <Compile Include="Tests\DateTimeExtensionsTests.cs" />
     <Compile Include="Tests\DateUtilTests.cs" />
+    <Compile Include="Tests\EventHandlerExtensionsTests.cs" />
     <Compile Include="Tests\HttpWebRequestExtensionsTests.cs" />
     <Compile Include="Tests\FluentOrderingExtensionsTests.cs" />
     <Compile Include="Tests\IEnumerableExtensionsTests.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Tests\IConvertibleExtensionsTests.cs" />
     <Compile Include="Tests\ExceptionExtensionsTests.cs" />
     <Compile Include="Tests\IntExtensionsTests.cs" />
+    <Compile Include="Tests\ObjectExtensionsTests.cs" />
     <Compile Include="Tests\StringBuilderExtensionsTests.cs" />
     <Compile Include="Tests\XAttributeExtensionsTests.cs" />
     <Compile Include="Tests\XElementExtensionsTests.cs" />

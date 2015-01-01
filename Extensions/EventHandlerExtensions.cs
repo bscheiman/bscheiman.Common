@@ -22,6 +22,7 @@ namespace bscheiman.Common.Extensions {
 
             AsyncCallback endAsyncCallback = delegate(IAsyncResult iar) {
                                                  var ar = iar as AsyncResult;
+
                                                  if (ar == null)
                                                      return;
 
@@ -48,6 +49,7 @@ namespace bscheiman.Common.Extensions {
 
             AsyncCallback endAsyncCallback = delegate(IAsyncResult iar) {
                                                  var ar = iar as AsyncResult;
+
                                                  if (ar == null)
                                                      return;
 

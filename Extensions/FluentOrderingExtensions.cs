@@ -12,6 +12,7 @@ namespace bscheiman.Common.Extensions {
             where TResult : IComparable<TResult> {
             var result = new FluentOrderer<T>(source);
             result.Comparers.Add((a, b) => predicate(a).CompareTo(predicate(b)));
+
             return result;
         }
 
@@ -19,18 +20,21 @@ namespace bscheiman.Common.Extensions {
             where TResult : IComparable<TResult> {
             var result = new FluentOrderer<T>(source);
             result.Comparers.Add((a, b) => predicate(a).CompareTo(predicate(b)) * -1);
+
             return result;
         }
 
         public static FluentOrderer<T> ThenBy<T, TResult>(this FluentOrderer<T> source, Func<T, TResult> predicate)
             where TResult : IComparable<TResult> {
             source.Comparers.Add((a, b) => predicate(a).CompareTo(predicate(b)));
+
             return source;
         }
 
         public static FluentOrderer<T> ThenByDescending<T, TResult>(this FluentOrderer<T> source, Func<T, TResult> predicate)
             where TResult : IComparable<TResult> {
             source.Comparers.Add((a, b) => predicate(a).CompareTo(predicate(b)) * -1);
+
             return source;
         }
 

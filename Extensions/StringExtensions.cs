@@ -1,6 +1,7 @@
 ﻿#region
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,12 +18,14 @@ namespace bscheiman.Common.Extensions {
         /// <returns>The parsed enum.</returns>
         /// <param name="str">String to parse, case insensitive.</param>
         /// <typeparam name="T">Type of enum</typeparam>
+        [DebuggerStepThrough]
         public static T AsEnum<T>(this string str) {
             str.ThrowIfNull("str");
 
             return (T) Enum.Parse(typeof (T), str, true);
         }
 
+        [DebuggerStepThrough]
         public static string FormatWith(this string str, params object[] args) {
             str.ThrowIfNull("str");
             args.ThrowIfNull("args");
@@ -35,6 +38,7 @@ namespace bscheiman.Common.Extensions {
         /// </summary>
         /// <returns>The hex string.</returns>
         /// <param name="str">String to convert.</param>
+        [DebuggerStepThrough]
         public static byte[] FromHexString(this string str) {
             str.ThrowIfNull("str");
 
@@ -53,18 +57,21 @@ namespace bscheiman.Common.Extensions {
         /// <typeparam name="T">Type to deserialize</typeparam>
         /// <param name="str">JSON string</param>
         /// <returns>A plain ol' .NET object</returns>
+        [DebuggerStepThrough]
         public static T FromJson<T>(this string str) {
             str.ThrowIfNull("str");
 
             return JsonConvert.DeserializeObject<T>(str);
         }
 
+        [DebuggerStepThrough]
         public static byte[] GetBytes(this string str) {
             str.ThrowIfNull("str");
 
             return str.GetBytes(Encoding.Default);
         }
 
+        [DebuggerStepThrough]
         public static byte[] GetBytes(this string str, Encoding encoding) {
             str.ThrowIfNull("str");
             encoding.ThrowIfNull("encoding");
@@ -72,6 +79,7 @@ namespace bscheiman.Common.Extensions {
             return encoding.GetBytes(str);
         }
 
+        [DebuggerStepThrough]
         public static bool IsLike(this string s, string regexPattern) {
             s.ThrowIfNull("s");
             regexPattern.ThrowIfNull("regexPattern");
@@ -83,14 +91,17 @@ namespace bscheiman.Common.Extensions {
             }
         }
 
+        [DebuggerStepThrough]
         public static bool IsNotNullOrEmpty(this string str) {
             return !string.IsNullOrEmpty(str);
         }
 
+        [DebuggerStepThrough]
         public static bool IsNullOrEmpty(this string str) {
             return string.IsNullOrEmpty(str);
         }
 
+        [DebuggerStepThrough]
         public static bool MatchesWildcard(this string text, string pattern) {
             text.ThrowIfNull("text");
             pattern.ThrowIfNull("pattern");
@@ -134,6 +145,7 @@ namespace bscheiman.Common.Extensions {
         /// </summary>
         /// <returns>Diacritic-less string.</returns>
         /// <param name="input">String to modify.</param>
+        [DebuggerStepThrough]
         public static string RemoveDiacritics(this string input) {
             input.ThrowIfNull("input");
 
@@ -151,6 +163,7 @@ namespace bscheiman.Common.Extensions {
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
+        [DebuggerStepThrough]
         public static IEnumerable<string> SplitInParts(this string s, int partLength) {
             s.ThrowIfNull("s");
             partLength.ThrowIf(partLength <= 0, "Part length has to be positive.", "partLength");
@@ -159,6 +172,7 @@ namespace bscheiman.Common.Extensions {
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
 
+        [DebuggerStepThrough]
         public static string[] SplitRe(this string value, string regexPattern, RegexOptions options = RegexOptions.None) {
             value.ThrowIfNull("value");
             regexPattern.ThrowIfNull("regexPattern");
@@ -166,11 +180,54 @@ namespace bscheiman.Common.Extensions {
             return Regex.Split(value, regexPattern, options);
         }
 
+        [DebuggerStepThrough]
+        public static IEnumerable<string> SplitRemoveEmptyEntries(this string str) {
+            return str.SplitRemoveEmptyEntries(Environment.NewLine.ToCharArray());
+        }
+
+        [DebuggerStepThrough]
+        public static IEnumerable<string> SplitRemoveEmptyEntries(this string str, char separator) {
+            return str.SplitRemoveEmptyEntries(new[] {
+                separator
+            });
+        }
+
+        [DebuggerStepThrough]
         public static IEnumerable<string> SplitRemoveEmptyEntries(this string str, char[] separator) {
             str.ThrowIfNull("str");
             separator.ThrowIfNull("separator");
 
-            return str.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            return str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        [DebuggerStepThrough]
+        public static bool ToBool(this string s) {
+            if (s.IsIn("1", "t", "T", "y", "Y"))
+                return true;
+
+            if (s.IsIn("0", "", "f", "F", "n", "N"))
+                return false;
+
+            bool retInt;
+            bool.TryParse(s, out retInt);
+
+            return retInt;
+        }
+
+        [DebuggerStepThrough]
+        public static decimal ToDecimal(this string s) {
+            decimal retInt;
+            decimal.TryParse(s, out retInt);
+
+            return retInt;
+        }
+
+        [DebuggerStepThrough]
+        public static double ToDouble(this string s) {
+            double retInt;
+            double.TryParse(s, out retInt);
+
+            return retInt;
         }
 
         /// <summary>
@@ -199,6 +256,22 @@ namespace bscheiman.Common.Extensions {
 
             using (var hmac = new HMACSHA256(key))
                 return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+        }
+
+        [DebuggerStepThrough]
+        public static int ToInt32(this string s) {
+            int retInt;
+            int.TryParse(s, out retInt);
+
+            return retInt;
+        }
+
+        [DebuggerStepThrough]
+        public static long ToInt64(this string s) {
+            long retInt;
+            long.TryParse(s, out retInt);
+
+            return retInt;
         }
 
         /// <summary>
@@ -235,6 +308,14 @@ namespace bscheiman.Common.Extensions {
 
             using (var sha = SHA256.Create())
                 return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+        }
+
+        [DebuggerStepThrough]
+        public static float ToSingle(this string s) {
+            float retInt;
+            float.TryParse(s, out retInt);
+
+            return retInt;
         }
 
         /// <summary>

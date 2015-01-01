@@ -17,6 +17,7 @@ namespace bscheiman.Common.Extensions {
             return item as T;
         }
 
+        [DebuggerStepThrough]
         public static bool Between<T>(this T target, T start, T end) where T : IComparable {
             target.ThrowIfNull("target");
             start.ThrowIfNull("start");
@@ -28,6 +29,7 @@ namespace bscheiman.Common.Extensions {
             return target.CompareTo(start) >= 0 && target.CompareTo(end) <= 0;
         }
 
+        [DebuggerStepThrough]
         public static string GetMemberName<T, TResult>(this T anyObject, Expression<Func<T, TResult>> expression) {
             return ((MemberExpression) expression.Body).Member.Name;
         }
@@ -37,9 +39,10 @@ namespace bscheiman.Common.Extensions {
             return item is T;
         }
 
+        [DebuggerStepThrough]
         public static bool IsIn<T>(this T source, params T[] list) {
-            if (null == source)
-                throw new ArgumentNullException("source");
+            source.ThrowIfNull("source");
+
             return list.Contains(source);
         }
 
@@ -48,19 +51,23 @@ namespace bscheiman.Common.Extensions {
             return !(item.Is<T>());
         }
 
+        [DebuggerStepThrough]
         public static bool IsNotIn<T>(this T source, params T[] list) {
             return !source.IsIn(list);
         }
 
+        [DebuggerStepThrough]
         public static bool IsNull(this object o) {
             return o == null;
         }
 
+        [DebuggerStepThrough]
         public static TReturn NullOr<TIn, TReturn>(this TIn obj, Func<TIn, TReturn> func, TReturn elseValue = default(TReturn))
             where TIn : class {
             return obj != null ? func(obj) : elseValue;
         }
 
+        [DebuggerStepThrough]
         public static T Safe<T>(this T obj) where T : new() {
             if (obj == null)
                 obj = new T();
@@ -68,48 +75,25 @@ namespace bscheiman.Common.Extensions {
             return obj;
         }
 
+        [DebuggerStepThrough]
         public static void ThrowIf<T>(this T obj, bool fail, string error, string parameterName) {
             if (fail)
                 throw new ArgumentException(parameterName);
         }
 
+        [DebuggerStepThrough]
         public static void ThrowIfNull<T>(this T obj, string parameterName) {
             if (obj == null)
                 throw new ArgumentNullException(parameterName);
         }
-
-        public static void ThrowUnless<T>(this T obj, bool success, string error, string parameterName) {
-            if (!success)
-                throw new ArgumentException(parameterName);
-        }
-
-        public static bool ToBool(this string s) {
-            bool retInt;
-            bool.TryParse(s, out retInt);
-
-            return retInt;
-        }
-
-        public static decimal ToDecimal(this string s) {
-            decimal retInt;
-            decimal.TryParse(s, out retInt);
-
-            return retInt;
-        }
-
+        
+        [DebuggerStepThrough]
         public static Dictionary<string, object> ToDictionary(this object o) {
             return
                 o.GetType()
                  .GetProperties()
                  .Where(propertyInfo => propertyInfo.GetIndexParameters().Length == 0)
                  .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(o, null));
-        }
-
-        public static double ToDouble(this string s) {
-            double retInt;
-            double.TryParse(s, out retInt);
-
-            return retInt;
         }
 
         /// <summary>
@@ -119,9 +103,9 @@ namespace bscheiman.Common.Extensions {
         /// <param name="request">Object to reflect.</param>
         /// <param name="separator">Separator for array-based fields.</param>
         /// <param name="readAndWrite">Whether to use read/write properties or only read.</param>
+        [DebuggerStepThrough]
         public static NameValueCollection ToFormValues(this object request, string separator = ",", bool readAndWrite = true) {
-            if (request == null)
-                throw new ArgumentNullException("request");
+            request.ThrowIfNull("request");
 
             var properties =
                 request.GetType()
@@ -151,25 +135,12 @@ namespace bscheiman.Common.Extensions {
             return values;
         }
 
-        public static int ToInt32(this string s) {
-            int retInt;
-            int.TryParse(s, out retInt);
-
-            return retInt;
-        }
-
-        public static long ToInt64(this string s) {
-            long retInt;
-            long.TryParse(s, out retInt);
-
-            return retInt;
-        }
-
         /// <summary>
         /// Returns a JSON version of the string
         /// </summary>
         /// <param name="obj">Object to serialize</param>
         /// <returns>JSON string</returns>
+        [DebuggerStepThrough]
         public static string ToJson(this object obj) {
             return JsonConvert.SerializeObject(obj);
         }
@@ -181,9 +152,9 @@ namespace bscheiman.Common.Extensions {
         /// <param name="request">Object to reflect.</param>
         /// <param name="separator">Separator for array-based fields.</param>
         /// <param name="readAndWrite">Whether to use read/write properties or only read.</param>
+        [DebuggerStepThrough]
         public static string ToQueryString(this object request, string separator = ",", bool readAndWrite = true) {
-            if (request == null)
-                throw new ArgumentNullException("request");
+            request.ThrowIfNull("request");
 
             var properties =
                 request.GetType()
@@ -209,13 +180,7 @@ namespace bscheiman.Common.Extensions {
                        properties.Select(x => string.Concat(Uri.EscapeDataString(x.Key), "=", Uri.EscapeDataString(x.Value.ToString()))));
         }
 
-        public static float ToSingle(this string s) {
-            float retInt;
-            float.TryParse(s, out retInt);
-
-            return retInt;
-        }
-
+        [DebuggerStepThrough]
         public static void With<T>(this T obj, Action<T> act) {
             act(obj);
         }
