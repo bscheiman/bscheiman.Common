@@ -78,22 +78,22 @@ namespace bscheiman.Common.Loggers {
         }
 
         internal void SendMessages() {
-            //try {
-            using (var client = new TcpClient(Server, Port)) {
-                client.NoDelay = true;
+            try {
+                using (var client = new TcpClient(Server, Port)) {
+                    client.NoDelay = true;
 
-                using (var stream = client.GetStream())
-                using (var writer = new StreamWriter(stream)) {
-                    foreach (string str in Queue.GetConsumingEnumerable()) {
-                        writer.WriteLine(str);
-                        writer.Flush();
+                    using (var stream = client.GetStream())
+                    using (var writer = new StreamWriter(stream)) {
+                        foreach (string str in Queue.GetConsumingEnumerable()) {
+                            writer.WriteLine(str);
+                            writer.Flush();
+                        }
                     }
                 }
+            } catch {
+                Thread.Sleep(2500);
+                SendMessages();
             }
-            //} catch {
-            //    Thread.Sleep(2500);
-            //    SendMessages();
-            //}
         }
     }
 }
