@@ -5,9 +5,12 @@ using bscheiman.Common.Util;
 #endregion
 
 namespace bscheiman.Common.Extensions {
+    /// <summary>
+    /// Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+    /// </summary>
     public static class DateTimeExtensions {
         /// <summary>
-        /// Gets a DateTime representing the first day in the current month. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing the first day in the current month.
         /// </summary>
         /// <param name="current">The current date</param>
         /// <returns></returns>
@@ -16,7 +19,7 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Gets a DateTime representing the first specified day in the current month. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing the first specified day in the current month.
         /// </summary>
         /// <param name="current">The current day</param>
         /// <param name="dayOfWeek">The current day of week</param>
@@ -47,7 +50,7 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Gets a DateTime representing the last day in the current month. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing the last day in the current month.
         /// </summary>
         /// <param name="current">The current date</param>
         /// <returns></returns>
@@ -56,7 +59,7 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Gets a DateTime representing the last specified day in the current month. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing the last specified day in the current month.
         /// </summary>
         /// <param name="current">The current date</param>
         /// <param name="dayOfWeek">The current day of week</param>
@@ -64,13 +67,14 @@ namespace bscheiman.Common.Extensions {
         public static DateTime Last(this DateTime current, DayOfWeek dayOfWeek) {
             var last = current.Last();
 
-            last = last.AddDays(Math.Abs(dayOfWeek - last.DayOfWeek) * -1);
+            while (last.DayOfWeek != dayOfWeek)
+                last = last.AddDays(-1);
 
             return last;
         }
 
         /// <summary>
-        /// Gets a DateTime representing midnight on the current date. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing midnight on the current date.
         /// </summary>
         /// <param name="current">The current date</param>
         public static DateTime Midnight(this DateTime current) {
@@ -78,7 +82,7 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Gets a DateTime representing the first date following the current date which falls on the given day of the week. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing the first date following the current date which falls on the given day of the week.
         /// </summary>
         /// <param name="current">The current date</param>
         /// <param name="dayOfWeek">The day of week for the next date to get</param>
@@ -92,45 +96,14 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Gets a DateTime representing noon on the current date. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
+        /// Gets a DateTime representing noon on the current date.
         /// </summary>
         /// <param name="current">The current date</param>
         public static DateTime Noon(this DateTime current) {
             return new DateTime(current.Year, current.Month, current.Day, 12, 0, 0);
         }
 
-        /// <summary>
-        /// Sets the time of the current date with minute precision. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
-        /// </summary>
-        /// <param name="current">The current date</param>
-        /// <param name="hour">The hour</param>
-        /// <param name="minute">The minute</param>
-        public static DateTime SetTime(this DateTime current, int hour, int minute) {
-            return SetTime(current, hour, minute, 0, 0);
-        }
-
-        /// <summary>
-        /// Sets the time of the current date with second precision. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
-        /// </summary>
-        /// <param name="current">The current date</param>
-        /// <param name="hour">The hour</param>
-        /// <param name="minute">The minute</param>
-        /// <param name="second">The second</param>
-        /// <returns></returns>
-        public static DateTime SetTime(this DateTime current, int hour, int minute, int second) {
-            return SetTime(current, hour, minute, second, 0);
-        }
-
-        /// <summary>
-        /// Sets the time of the current date with millisecond precision. Originally from DateTimeExtensions @ http://datetimeextensions.codeplex.com/
-        /// </summary>
-        /// <param name="current">The current date</param>
-        /// <param name="hour">The hour</param>
-        /// <param name="minute">The minute</param>
-        /// <param name="second">The second</param>
-        /// <param name="millisecond">The millisecond</param>
-        /// <returns></returns>
-        public static DateTime SetTime(this DateTime current, int hour, int minute, int second, int millisecond) {
+        public static DateTime SetTime(this DateTime current, int hour, int minute, int second = 0, int millisecond = 0) {
             return new DateTime(current.Year, current.Month, current.Day, hour, minute, second, millisecond);
         }
 
