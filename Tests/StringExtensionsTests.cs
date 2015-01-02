@@ -26,6 +26,42 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test]
+        public void CIContains() {
+            Assert.Throws<ArgumentException>(() => NullString.CIContains("asd"));
+            Assert.Throws<ArgumentException>(() => "asd".CIContains(NullString));
+
+            Assert.IsTrue("the quick brown fox".CIContains("BROWN"));
+            Assert.IsFalse("the quick brown fox".CIContains("cat"));
+        }
+
+        [Test]
+        public void CIEndsWith() {
+            Assert.Throws<ArgumentException>(() => NullString.CIEndsWith("asd"));
+            Assert.Throws<ArgumentException>(() => "asd".CIEndsWith(NullString));
+
+            Assert.IsTrue("the quick brown fox".CIEndsWith("FOX"));
+            Assert.IsFalse("the quick brown fox".CIEndsWith("cat"));
+        }
+
+        [Test]
+        public void CIIndexOf() {
+            Assert.Throws<ArgumentException>(() => NullString.CIIndexOf("asd"));
+            Assert.Throws<ArgumentException>(() => "asd".CIIndexOf(NullString));
+
+            Assert.IsTrue("the quick brown fox".CIIndexOf("q") >= 0);
+            Assert.IsFalse("the quick brown fox".CIIndexOf("z") >= 0);
+        }
+
+        [Test]
+        public void CIStartsWith() {
+            Assert.Throws<ArgumentException>(() => NullString.CIStartsWith("asd"));
+            Assert.Throws<ArgumentException>(() => "asd".CIStartsWith(NullString));
+
+            Assert.IsTrue("the quick brown fox".CIStartsWith("THE"));
+            Assert.IsFalse("the quick brown fox".CIStartsWith("cat"));
+        }
+
+        [Test]
         public void FormatWith() {
             Assert.AreEqual("Boris Scheiman", "{0} {1}".FormatWith("Boris", "Scheiman"));
         }
@@ -52,6 +88,18 @@ namespace bscheiman.Common.Tests {
                 Assert.AreEqual(encoding.GetBytes(str), str.GetBytes(encoding));
                 Assert.AreEqual(Encoding.Default.GetBytes(str), str.GetBytes());
             }
+        }
+
+        [Test]
+        public void GetHiddenConfig() {
+            string str = @"C:\Test.xml";
+
+            Assert.Throws<ArgumentException>(() => NullString.GetHiddenConfig("test"));
+            Assert.Throws<ArgumentException>(() => NullString.GetHiddenConfig<int>("test"));
+            Assert.Throws<ArgumentException>(() => str.GetHiddenConfig<int>(null));
+
+            Assert.AreEqual("123", str.GetHiddenConfig("test"));
+            Assert.AreEqual(123, str.GetHiddenConfig<int>("test"));
         }
 
         [Test]

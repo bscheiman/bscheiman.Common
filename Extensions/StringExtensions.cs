@@ -3,9 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 
 #endregion
@@ -23,6 +27,38 @@ namespace bscheiman.Common.Extensions {
             str.ThrowIfNull("str");
 
             return (T) Enum.Parse(typeof (T), str, true);
+        }
+
+        [DebuggerStepThrough]
+        public static bool CIContains(this string str, string other) {
+            str.ThrowIfNullOrEmpty("str");
+            other.ThrowIfNullOrEmpty("other");
+
+            return Thread.CurrentThread.CurrentCulture.CompareInfo.IndexOf(str, other, CompareOptions.IgnoreCase) >= 0;
+        }
+
+        [DebuggerStepThrough]
+        public static bool CIEndsWith(this string str, string other) {
+            str.ThrowIfNullOrEmpty("str");
+            other.ThrowIfNullOrEmpty("other");
+
+            return str.EndsWith(other, true, CultureInfo.CurrentCulture);
+        }
+
+        [DebuggerStepThrough]
+        public static int CIIndexOf(this string str, string other) {
+            str.ThrowIfNullOrEmpty("str");
+            other.ThrowIfNullOrEmpty("other");
+
+            return str.IndexOf(other, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        [DebuggerStepThrough]
+        public static bool CIStartsWith(this string str, string other) {
+            str.ThrowIfNullOrEmpty("str");
+            other.ThrowIfNullOrEmpty("other");
+
+            return str.StartsWith(other, true, CultureInfo.CurrentCulture);
         }
 
         [DebuggerStepThrough]
@@ -77,6 +113,33 @@ namespace bscheiman.Common.Extensions {
             encoding.ThrowIfNull("encoding");
 
             return encoding.GetBytes(str);
+        }
+
+        [DebuggerStepThrough]
+        public static string GetHiddenConfig(this string file, string key, string defValue = default(string)) {
+            return file.GetHiddenConfig(key, defValue);
+        }
+
+        [DebuggerStepThrough]
+        public static T GetHiddenConfig<T>(this string file, string key, T defValue = default(T)) {
+            file.ThrowIfNullOrEmpty("str");
+
+            if (!File.Exists(file))
+                return default(T);
+
+            var doc = XDocument.Load(File.OpenRead(file));
+
+            foreach (var element in
+                doc.Element("configuration").Elements("appSettings").Elements("add").Where(e => e.Name.LocalName == "add"))
+                return element.Attribute("value").ValueOrDefault<T>();
+
+            return default(T);
+        }
+
+        [DebuggerStepThrough]
+        public static void IfNullOrEmpty(this string str, Action act) {
+            if (str.IsNullOrEmpty())
+                act();
         }
 
         [DebuggerStepThrough]
@@ -198,6 +261,12 @@ namespace bscheiman.Common.Extensions {
             separator.ThrowIfNull("separator");
 
             return str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        [DebuggerStepThrough]
+        public static void ThrowIfNullOrEmpty(this string str, string argName) {
+            if (str.IsNullOrEmpty())
+                throw new ArgumentException(argName);
         }
 
         [DebuggerStepThrough]
