@@ -46,6 +46,14 @@ namespace bscheiman.Common.Extensions {
         }
 
         [DebuggerStepThrough]
+        public static bool CIEquals(this string str, string other) {
+            str.ThrowIfNullOrEmpty("str");
+            other.ThrowIfNullOrEmpty("other");
+
+            return str.Equals(other, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        [DebuggerStepThrough]
         public static int CIIndexOf(this string str, string other) {
             str.ThrowIfNullOrEmpty("str");
             other.ThrowIfNullOrEmpty("other");
