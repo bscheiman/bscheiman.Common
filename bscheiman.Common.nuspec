@@ -8,6 +8,7 @@
      <requireLicenseAcceptance>false</requireLicenseAcceptance>
      <description>Useful extensions/tools/utils I keep using all over the place. Hit me up (@bscheiman) if you need help.</description>
      <language>en-US</language>
+     <tags>boris scheiman bscheiman common helpers util extension extensions xm mexico aspnet mvc bootstrap</tags>
    </metadata>
    
    <files>
