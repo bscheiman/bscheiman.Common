@@ -9,7 +9,7 @@ namespace bscheiman.Common.Loggers {
     internal class ConsoleLogger : ILogger {
         public bool CanUse(LoggerParameters parms) {
             return Ignore.Exception(() => {
-                                        Console.WriteLine("Checking console...");
+                                        Console.WriteLine();
                                         return true;
                                     });
         }
