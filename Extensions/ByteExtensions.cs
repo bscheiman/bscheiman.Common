@@ -73,5 +73,41 @@ namespace bscheiman.Common.Extensions {
             using (var hmac = new HMACSHA256(key))
                 return BitConverter.ToString(hmac.ComputeHash(bytes)).Replace("-", "").ToUpper();
         }
+
+        /// <summary>
+        /// Generates an MD5 hash from the specified byte array
+        /// </summary>
+        /// <returns>MD5 hash.</returns>
+        /// <param name="bytes">String.</param>
+        public static byte[] ToMD5(this byte[] bytes) {
+            bytes.ThrowIfNull("bytes");
+
+            using (var sha = MD5.Create())
+                return sha.ComputeHash(bytes);
+        }
+
+        /// <summary>
+        /// Generates a SHA1 hash from the specified byte array
+        /// </summary>
+        /// <returns>SHA1 hash.</returns>
+        /// <param name="bytes">String.</param>
+        public static byte[] ToSHA1(this byte[] bytes) {
+            bytes.ThrowIfNull("bytes");
+
+            using (var sha = SHA1.Create())
+                return sha.ComputeHash(bytes);
+        }
+
+        /// <summary>
+        /// Generates a SHA256 hash from the specified byte array
+        /// </summary>
+        /// <returns>SHA256 hash.</returns>
+        /// <param name="bytes">String.</param>
+        public static byte[] ToSHA256(this byte[] bytes) {
+            bytes.ThrowIfNull("bytes");
+
+            using (var sha = SHA256.Create())
+                return sha.ComputeHash(bytes);
+        }
     }
 }
