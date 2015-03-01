@@ -1,9 +1,7 @@
 ﻿#region
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using bscheiman.Common.Extensions;
 using bscheiman.Common.Loggers;
 using bscheiman.Common.Objects;
@@ -12,7 +10,6 @@ using bscheiman.Common.Objects;
 
 namespace bscheiman.Common.Util {
     public static class Log {
-        internal static string Caller = Process.GetCurrentProcess().ProcessName;
         internal static readonly List<ILogger> Loggers = new List<ILogger>();
 
         internal static LoggerParameters DefaultConfig {
@@ -32,7 +29,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«DEBUG/{0}» {1}".FormatWith(Caller, str.FormatWith(objs));
+            str = "«DEBUG» {0}".FormatWith(str.FormatWith(objs));
 
             foreach (var l in Loggers)
                 l.Debug(str);
@@ -44,7 +41,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«DEBUG/{0}» {1}".FormatWith(Caller, str);
+            str = "«DEBUG» {0}".FormatWith(str);
 
             foreach (var l in Loggers)
                 l.Debug(str);
@@ -57,7 +54,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«ERROR/{0}» {1}".FormatWith(Caller, str.FormatWith(objs));
+            str = "«ERROR» {0}".FormatWith(str.FormatWith(objs));
 
             foreach (var l in Loggers)
                 l.Error(str);
@@ -69,7 +66,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«ERROR/{0}» {1}".FormatWith(Caller, str);
+            str = "«ERROR» {0}".FormatWith(str);
 
             foreach (var l in Loggers)
                 l.Error(str);
@@ -82,7 +79,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«FATAL/{0}» {1}".FormatWith(Caller, str.FormatWith(e));
+            str = "«FATAL» {0}".FormatWith(str.FormatWith(e));
 
             foreach (var l in Loggers)
                 l.Fatal(str);
@@ -94,7 +91,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            string str = "«FATAL/{0}» {1}".FormatWith(Caller, e);
+            string str = "«FATAL» {0}".FormatWith(e);
 
             foreach (var l in Loggers)
                 l.Fatal(str);
@@ -106,7 +103,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«FATAL/{0}» {1}".FormatWith(Caller, str);
+            str = "«FATAL» {0}".FormatWith(str);
 
             foreach (var l in Loggers)
                 l.Fatal(str);
@@ -119,7 +116,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«INFO/{0}» {1}".FormatWith(Caller, str.FormatWith(objs));
+            str = "«INFO» {0}".FormatWith(str.FormatWith(objs));
 
             foreach (var l in Loggers)
                 l.Info(str);
@@ -131,7 +128,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«INFO/{0}» {1}".FormatWith(Caller, str);
+            str = "«INFO» {0}".FormatWith(str);
 
             foreach (var l in Loggers)
                 l.Info(str);
@@ -156,10 +153,9 @@ namespace bscheiman.Common.Util {
                 return;
             }
 
-            foreach (var logger in
-                typeof (ILogger).GetImplementations()
-                                .Select(type => Activator.CreateInstance(type) as ILogger)
-                                .Where(logger => logger != null && logger.CanUse(parms)))
+            foreach (var logger in new ILogger[] {
+                new DebugLogger(), new LogEntriesLogger()
+            }.Where(logger => logger != null && logger.CanUse(parms)))
                 Loggers.Add(logger);
 
             foreach (var l in Loggers)
@@ -180,7 +176,7 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«WARN/{0}» {1}".FormatWith(Caller, str.FormatWith(objs));
+            str = "«WARN» {0}".FormatWith(str.FormatWith(objs));
 
             foreach (var l in Loggers)
                 l.Warn(str);
@@ -192,13 +188,10 @@ namespace bscheiman.Common.Util {
             if (!Initialized)
                 Setup();
 
-            str = "«WARN/{0}» {1}".FormatWith(Caller, str);
+            str = "«WARN» {0}".FormatWith(str);
 
             foreach (var l in Loggers)
                 l.Warn(str);
         }
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
     }
 }

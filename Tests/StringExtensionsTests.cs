@@ -79,27 +79,14 @@ namespace bscheiman.Common.Tests {
         [Test]
         public void GetBytes([Values("lalala", "ñasdasd", "123123", "")] string str) {
             foreach (var encoding in new[] {
-                Encoding.ASCII, Encoding.Default, Encoding.UTF32, Encoding.UTF7, Encoding.UTF8, Encoding.Unicode
+                Encoding.UTF8, Encoding.Unicode
             }) {
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes());
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(encoding));
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(null));
 
                 Assert.AreEqual(encoding.GetBytes(str), str.GetBytes(encoding));
-                Assert.AreEqual(Encoding.Default.GetBytes(str), str.GetBytes());
             }
-        }
-
-        [Test]
-        public void GetHiddenConfig() {
-            string str = @"C:\Test.xml";
-
-            Assert.Throws<ArgumentException>(() => NullString.GetHiddenConfig("test"));
-            Assert.Throws<ArgumentException>(() => NullString.GetHiddenConfig<int>("test"));
-            Assert.Throws<ArgumentException>(() => str.GetHiddenConfig<int>(null));
-
-            Assert.AreEqual("123", str.GetHiddenConfig("test"));
-            Assert.AreEqual(123, str.GetHiddenConfig<int>("test"));
         }
 
         [Test]
@@ -132,13 +119,6 @@ namespace bscheiman.Common.Tests {
             Assert.IsFalse(str.MatchesWildcard("*cat*"));
             Assert.IsFalse(str.MatchesWildcard("dog"));
             Assert.IsTrue(str.MatchesWildcard("*dog*"));
-        }
-
-        [Test]
-        public void RemoveDiacritics() {
-            Assert.Throws<ArgumentNullException>(() => NullString.RemoveDiacritics());
-
-            Assert.AreEqual("über".RemoveDiacritics(), "uber");
         }
 
         [Test]
@@ -233,8 +213,8 @@ namespace bscheiman.Common.Tests {
 
         [Test, Sequential]
         public void ToHMAC256String([Values("Jefe")] string key,
-            [Values("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")] string digest,
-            [Values("what do ya want for nothing?")] string msg) {
+                                    [Values("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")] string digest,
+                                    [Values("what do ya want for nothing?")] string msg) {
             Assert.AreEqual(digest.ToUpper(), msg.ToHMAC256(key));
         }
 

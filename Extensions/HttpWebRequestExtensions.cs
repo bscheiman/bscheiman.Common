@@ -17,11 +17,11 @@ namespace bscheiman.Common.Extensions {
         };
 
         static HttpWebRequestExtensions() {
-            var type = typeof (HttpWebRequest);
+            var type = typeof (HttpWebRequest).GetTypeInfo();
 
             foreach (string header in RestrictedHeaders) {
                 string propertyName = header.Replace("-", "");
-                var headerProperty = type.GetProperty(propertyName);
+                var headerProperty = type.GetDeclaredProperty(propertyName);
 
                 HeaderProperties[header] = headerProperty;
             }

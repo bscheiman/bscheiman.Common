@@ -12,15 +12,9 @@
    </metadata>
    
    <files>
-	   <file src="bin\Release\bscheiman.Common.dll" target="lib\net40\bscheiman.Common.dll" />
-	   <!--<file src="bin\Release\bscheiman.Common.xml" target="lib\net40\bscheiman.Common.xml" />-->
-	   <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoAndroid\bscheiman.Common.dll" />
-	   <!--<file src="bin\Release\bscheiman.Common.xml" target="lib\MonoAndroid\bscheiman.Common.xml" />-->
-	   <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoTouch\bscheiman.Common.dll" />
-	   <!--<file src="bin\Release\bscheiman.Common.xml" target="lib\MonoTouch\bscheiman.Common.xml" />-->
-	   <file src="bin\Release\bscheiman.Common.dll" target="lib\portable-win+net45+MonoAndroid+MonoTouch+wp8\bscheiman.Common.dll" />
-	   <!--<file src="bin\Release\bscheiman.Common.xml" target="lib\portable-win+net45+MonoAndroid+MonoTouch+wp8\bscheiman.Common.xml" />-->
-	   <file src="bin\Release\bscheiman.Common.dll" target="lib\portable-net45+win+wpa81+wp80\bscheiman.Common.dll" />
-	   <!--<file src="bin\Release\bscheiman.Common.xml" target="lib\portable-net45+win+wpa81+wp80\bscheiman.Common.xml" />-->
+     <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoAndroid\bscheiman.Common.dll" />
+     <file src="bin\Release\bscheiman.Common.dll" target="lib\MonoTouch\bscheiman.Common.dll" />
+     <file src="bin\Release\bscheiman.Common.dll" target="lib\Xamarin.iOS10\bscheiman.Common.dll" />
+     <file src="bin\Release\bscheiman.Common.dll" target="lib\portable-net45+win+wp8+win8\bscheiman.Common.dll" />
    </files>
 </package>

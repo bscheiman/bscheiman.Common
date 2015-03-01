@@ -2,15 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml.Linq;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto.Digests;
 
 #endregion
 
@@ -34,7 +30,7 @@ namespace bscheiman.Common.Extensions {
             str.ThrowIfNullOrEmpty("str");
             other.ThrowIfNullOrEmpty("other");
 
-            return Thread.CurrentThread.CurrentCulture.CompareInfo.IndexOf(str, other, CompareOptions.IgnoreCase) >= 0;
+            return str.ToLower().Contains(other.ToLower());
         }
 
         [DebuggerStepThrough]
@@ -42,7 +38,7 @@ namespace bscheiman.Common.Extensions {
             str.ThrowIfNullOrEmpty("str");
             other.ThrowIfNullOrEmpty("other");
 
-            return str.EndsWith(other, true, CultureInfo.CurrentCulture);
+            return str.ToLower().EndsWith(other.ToLower());
         }
 
         [DebuggerStepThrough]
@@ -66,7 +62,7 @@ namespace bscheiman.Common.Extensions {
             str.ThrowIfNullOrEmpty("str");
             other.ThrowIfNullOrEmpty("other");
 
-            return str.StartsWith(other, true, CultureInfo.CurrentCulture);
+            return str.ToLower().StartsWith(other.ToLower());
         }
 
         [DebuggerStepThrough]
@@ -112,7 +108,7 @@ namespace bscheiman.Common.Extensions {
         public static byte[] GetBytes(this string str) {
             str.ThrowIfNull("str");
 
-            return str.GetBytes(Encoding.Default);
+            return str.GetBytes(Encoding.UTF8);
         }
 
         [DebuggerStepThrough]
@@ -122,28 +118,7 @@ namespace bscheiman.Common.Extensions {
 
             return encoding.GetBytes(str);
         }
-
-        [DebuggerStepThrough]
-        public static string GetHiddenConfig(this string file, string key, string defValue = default(string)) {
-            return file.GetHiddenConfig(key, defValue);
-        }
-
-        [DebuggerStepThrough]
-        public static T GetHiddenConfig<T>(this string file, string key, T defValue = default(T)) {
-            file.ThrowIfNullOrEmpty("str");
-
-            if (!File.Exists(file))
-                return default(T);
-
-            var doc = XDocument.Load(File.OpenRead(file));
-
-            foreach (var element in
-                doc.Element("configuration").Elements("appSettings").Elements("add").Where(e => e.Name.LocalName == "add"))
-                return element.Attribute("value").ValueOrDefault<T>();
-
-            return default(T);
-        }
-
+        
         [DebuggerStepThrough]
         public static void IfNullOrEmpty(this string str, Action act) {
             if (str.IsNullOrEmpty())
@@ -209,29 +184,6 @@ namespace bscheiman.Common.Extensions {
                 ip++;
 
             return pattern.CharAt(ip) == 0;
-        }
-
-        /// <summary>
-        /// Removes the diacritics from a UTF8 string. Use with caution: in Spanish, año is *VERY* different from ano.
-        /// </summary>
-        /// <returns>Diacritic-less string.</returns>
-        /// <param name="input">String to modify.</param>
-        [DebuggerStepThrough]
-        public static string RemoveDiacritics(this string input) {
-            input.ThrowIfNull("input");
-
-            string stFormD = input.Normalize(NormalizationForm.FormD);
-            int len = stFormD.Length;
-            var sb = new StringBuilder();
-
-            for (int i = 0; i < len; i++) {
-                var uc = CharUnicodeInfo.GetUnicodeCategory(stFormD[i]);
-
-                if (uc != UnicodeCategory.NonSpacingMark)
-                    sb.Append(stFormD[i]);
-            }
-
-            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         [DebuggerStepThrough]
@@ -359,8 +311,7 @@ namespace bscheiman.Common.Extensions {
         public static string ToMD5(this string str) {
             str.ThrowIfNull("str");
 
-            using (var sha = MD5.Create())
-                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+            return BitConverter.ToString(DigestHelper(new MD5Digest(), str)).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -371,8 +322,7 @@ namespace bscheiman.Common.Extensions {
         public static string ToSHA1(this string str) {
             str.ThrowIfNull("str");
 
-            using (var sha = SHA1.Create())
-                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+            return BitConverter.ToString(DigestHelper(new Sha1Digest(), str)).Replace("-", "").ToUpper();
         }
 
         /// <summary>
@@ -383,8 +333,7 @@ namespace bscheiman.Common.Extensions {
         public static string ToSHA256(this string str) {
             str.ThrowIfNull("str");
 
-            using (var sha = SHA256.Create())
-                return BitConverter.ToString(sha.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+            return BitConverter.ToString(DigestHelper(new Sha256Digest(), str)).Replace("-", "").ToUpper();
         }
 
         [DebuggerStepThrough]
@@ -414,6 +363,16 @@ namespace bscheiman.Common.Extensions {
             s.ThrowIfNull("s");
 
             return index < s.Length ? s[index] : '\0';
+        }
+
+        internal static byte[] DigestHelper(GeneralDigest digest, string msg) {
+            var msgBytes = Encoding.UTF8.GetBytes(msg);
+            var bytes = new byte[digest.GetDigestSize()];
+
+            digest.BlockUpdate(msgBytes, 0, msgBytes.Length);
+            digest.DoFinal(bytes, 0);
+
+            return bytes;
         }
     }
 }

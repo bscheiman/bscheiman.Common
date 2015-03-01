@@ -15,9 +15,7 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual("", "".FromHexString().GetString());
             Assert.AreEqual("hello", "68656c6c6f".FromHexString().GetString());
             Assert.AreEqual("hello", "efbbbf68656c6c6f".FromHexString().GetString());
-            Assert.AreEqual("hello", "fffe680065006c006c006f00".FromHexString().GetString());
-            Assert.AreEqual("hello", "0000feff68000000650000006c0000006c0000006f000000".FromHexString().GetString());
-            Assert.AreEqual("hello", "2b2f7668656c6c6f".FromHexString().GetString());
+            Assert.AreEqual("hello", "fffe680065006c006c006f00".FromHexString().GetString()); // UTF8
         }
 
         [Test, Sequential]

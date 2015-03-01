@@ -1,6 +1,8 @@
 ﻿#region
 using System;
-using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using bscheiman.Common.Attributes;
 using bscheiman.Common.Helpers;
 
 #endregion
@@ -12,13 +14,12 @@ namespace bscheiman.Common.Extensions {
         /// </summary>
         /// <returns>The attribute instance</returns>
         /// <param name="enumVal">Enum</param>
-        /// <typeparam name="T">Enum to use</typeparam>
-        public static T GetAttributeOfType<T>(this Enum enumVal) where T : Attribute {
+        /// <typeparam name="TAttribute">Enum to use</typeparam>
+        public static TAttribute GetAttributeOfType<TAttribute>(this Enum enumVal) where TAttribute : Attribute {
             var type = enumVal.GetType();
-            var memInfo = type.GetMember(enumVal.ToString());
-            var attributes = memInfo[0].GetCustomAttributes(typeof (T), false);
-
-            return (attributes.Length > 0) ? (T) attributes[0] : null;
+            var info = type.GetTypeInfo();
+            string name = Enum.GetName(type, enumVal);
+            return info.GetDeclaredField(name).GetCustomAttributes(false).OfType<TAttribute>().SingleOrDefault();
         }
 
         public static string GetDescription(this Enum enumVal) {

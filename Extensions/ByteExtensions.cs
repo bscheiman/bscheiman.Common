@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Org.BouncyCastle.Crypto.Digests;
 
 #endregion
 
@@ -28,12 +29,6 @@ namespace bscheiman.Common.Extensions {
                 } else if (buffer.Length >= 2 && buffer[0] == 0xfe && buffer[1] == 0xff) {
                     encoding = Encoding.BigEndianUnicode;
                     offset = 2;
-                } else if (buffer.Length >= 4 && buffer[0] == 0 && buffer[1] == 0 && buffer[2] == 0xfe && buffer[3] == 0xff) {
-                    encoding = Encoding.UTF32;
-                    offset = 4;
-                } else if (buffer.Length >= 3 && buffer[0] == 0x2b && buffer[1] == 0x2f && buffer[2] == 0x76) {
-                    encoding = Encoding.UTF7;
-                    offset = 3;
                 }
             }
 
@@ -41,7 +36,7 @@ namespace bscheiman.Common.Extensions {
                 stream.Write(buffer, offset, buffer.Length - offset);
                 stream.Seek(0, SeekOrigin.Begin);
 
-                using (var reader = new StreamReader(stream, encoding ?? Encoding.Default))
+                using (var reader = new StreamReader(stream, encoding ?? Encoding.UTF8))
                     return reader.ReadToEnd();
             }
         }
@@ -82,8 +77,7 @@ namespace bscheiman.Common.Extensions {
         public static byte[] ToMD5(this byte[] bytes) {
             bytes.ThrowIfNull("bytes");
 
-            using (var sha = MD5.Create())
-                return sha.ComputeHash(bytes);
+            return DigestHelper(new MD5Digest(), bytes);
         }
 
         /// <summary>
@@ -94,8 +88,7 @@ namespace bscheiman.Common.Extensions {
         public static byte[] ToSHA1(this byte[] bytes) {
             bytes.ThrowIfNull("bytes");
 
-            using (var sha = SHA1.Create())
-                return sha.ComputeHash(bytes);
+            return DigestHelper(new Sha1Digest(), bytes);
         }
 
         /// <summary>
@@ -106,8 +99,16 @@ namespace bscheiman.Common.Extensions {
         public static byte[] ToSHA256(this byte[] bytes) {
             bytes.ThrowIfNull("bytes");
 
-            using (var sha = SHA256.Create())
-                return sha.ComputeHash(bytes);
+            return DigestHelper(new Sha256Digest(), bytes);
+        }
+
+        internal static byte[] DigestHelper(GeneralDigest digest, byte[] msg) {
+            var bytes = new byte[digest.GetDigestSize()];
+
+            digest.BlockUpdate(msg, 0, msg.Length);
+            digest.DoFinal(bytes, 0);
+
+            return bytes;
         }
     }
 }

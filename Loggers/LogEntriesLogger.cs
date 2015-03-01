@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using bscheiman.Common.Extensions;
 using bscheiman.Common.Objects;
+using Sockets.Plugin;
 
 #endregion
 
@@ -57,10 +57,7 @@ namespace bscheiman.Common.Loggers {
             Token = parms.LogEntriesToken;
             Running = true;
 
-            new Thread(SendMessages) {
-                Name = "LogEntries Background",
-                IsBackground = false
-            }.Start();
+            Task.Factory.StartNew(SendMessages);
         }
 
         public void Teardown() {
@@ -77,13 +74,12 @@ namespace bscheiman.Common.Loggers {
                 Queue.Add("{0} {1}".FormatWith(Token, s));
         }
 
-        internal void SendMessages() {
+        internal async void SendMessages() {
             try {
-                using (var client = new TcpClient(Server, Port)) {
-                    client.NoDelay = true;
+                using (var client = new TcpSocketClient()) {
+                    await client.ConnectAsync(Server, Port);
 
-                    using (var stream = client.GetStream())
-                    using (var writer = new StreamWriter(stream)) {
+                    using (var writer = new StreamWriter(client.WriteStream)) {
                         foreach (string str in Queue.GetConsumingEnumerable()) {
                             writer.WriteLine(str);
                             writer.Flush();
@@ -91,7 +87,6 @@ namespace bscheiman.Common.Loggers {
                     }
                 }
             } catch {
-                Thread.Sleep(2500);
                 SendMessages();
             }
         }

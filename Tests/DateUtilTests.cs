@@ -1,5 +1,5 @@
 ﻿#region
-using System.Threading;
+using System.Threading.Tasks;
 using bscheiman.Common.Util;
 using NUnit.Framework;
 
@@ -12,19 +12,19 @@ namespace bscheiman.Common.Tests {
     [TestFixture]
     public class DateUtilTests {
         [Test]
-        public void EpochDoesntChange() {
+        public async void EpochDoesntChange() {
             var epoch = DateUtil.Epoch;
-            Thread.Sleep(1500);
+            await Task.Delay(1500);
 
             Assert.AreEqual(epoch, DateUtil.Epoch);
         }
 
         [Test]
-        public void NowChanges() {
+        public async void NowChanges() {
             long now = DateUtil.Now;
             var nowDt = DateUtil.NowDt;
 
-            Thread.Sleep(1500);
+            await Task.Delay(1500);
 
             Assert.AreNotEqual(now, DateUtil.Now);
             Assert.AreNotEqual(nowDt, DateUtil.NowDt);

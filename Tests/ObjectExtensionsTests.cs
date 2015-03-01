@@ -1,8 +1,6 @@
 ﻿#region
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using bscheiman.Common.Extensions;
 using NUnit.Framework;
@@ -40,7 +38,6 @@ namespace bscheiman.Common.Tests {
             var desc = new DescriptionAttribute("Test");
 
             Assert.AreEqual(desc.GetMemberName(d => d.Description), "Description");
-            Assert.AreEqual(desc.GetMemberName(d => d.TypeId), "TypeId");
         }
 
         [Test]
@@ -48,7 +45,7 @@ namespace bscheiman.Common.Tests {
             Assert.IsTrue("string".Is<string>());
             Assert.IsTrue("string".Is<object>());
             Assert.IsFalse("string".Is<DescriptionAttribute>());
-            Assert.IsFalse("string".Is<ArrayList>());
+            Assert.IsFalse("string".Is<List>());
         }
 
         [Test]
@@ -66,7 +63,7 @@ namespace bscheiman.Common.Tests {
             Assert.IsFalse("string".IsNot<string>());
             Assert.IsFalse("string".IsNot<object>());
             Assert.IsTrue("string".IsNot<DescriptionAttribute>());
-            Assert.IsTrue("string".IsNot<ArrayList>());
+            Assert.IsTrue("string".IsNot<List>());
         }
 
         [Test]
@@ -119,43 +116,10 @@ namespace bscheiman.Common.Tests {
         }
 
         [Test]
-        public void ToDictionary() {
-            var obj = new {
-                person = "p1",
-                val = "v1"
-            };
-
-            var dict = new Dictionary<string, string>();
-            dict["person"] = "p1";
-            dict["val"] = "v1";
-
-            Assert.AreEqual(dict, obj.ToDictionary());
-        }
-
-        [Test]
-        public void ToFormValues() {
-            var obj = new Dummy {
-                Name = "name"
-            };
-
-            var nvc = new NameValueCollection();
-            nvc.Add("Name", "name");
-
-            Assert.AreEqual(nvc, obj.ToFormValues());
-        }
-
-        [Test]
         public void ToJson() {
             Assert.AreEqual(@"{""Name"":""name""}", new Dummy {
                 Name = "name"
             }.ToJson());
-        }
-
-        [Test]
-        public void ToQueryString() {
-            Assert.AreEqual(@"?Name=name", new Dummy {
-                Name = "name"
-            }.ToQueryString());
         }
 
         [Test]

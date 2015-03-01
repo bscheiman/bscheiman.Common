@@ -1,6 +1,7 @@
 ﻿#region
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using bscheiman.Common.Extensions;
 using bscheiman.Common.Helpers;
 using NUnit.Framework;
@@ -48,8 +49,8 @@ namespace bscheiman.Common.Tests {
                 Amount = rand.NextDouble(100, 500)
             });
 
-            Console.WriteLine(list.OrderFluentlyBy(i => i.Id).ThenBy(i => i.Name).ThenByDescending(i => i.Amount));
-            Console.WriteLine(list.OrderFluentlyByDescending(i => i.Id).ThenBy(i => i.Name).ThenBy(i => i.Amount));
+            Debug.WriteLine(list.OrderFluentlyBy(i => i.Id).ThenBy(i => i.Name).ThenByDescending(i => i.Amount));
+            Debug.WriteLine(list.OrderFluentlyByDescending(i => i.Id).ThenBy(i => i.Name).ThenBy(i => i.Amount));
         }
 
         private class Invoice {

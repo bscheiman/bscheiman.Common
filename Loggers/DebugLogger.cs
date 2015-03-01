@@ -1,29 +1,33 @@
-﻿#region
-using System.Diagnostics;
+#region
 using bscheiman.Common.Objects;
+using DiagDebug = System.Diagnostics.Debug;
 
 #endregion
 
 namespace bscheiman.Common.Loggers {
-    internal class TraceLogger : ILogger {
+    internal class DebugLogger : ILogger {
         public bool CanUse(LoggerParameters parms) {
+#if DEBUG
             return true;
+#else
+            return false;
+#endif
         }
 
         public void Debug(string str) {
-            Trace.TraceInformation(str);
+            DiagDebug.WriteLine(str);
         }
 
         public void Error(string str) {
-            Trace.TraceError(str);
+            DiagDebug.WriteLine(str);
         }
 
         public void Fatal(string str) {
-            Trace.TraceError(str);
+            DiagDebug.WriteLine(str);
         }
 
         public void Info(string str) {
-            Trace.TraceInformation(str);
+            DiagDebug.WriteLine(str);
         }
 
         public void Setup(LoggerParameters parms) {
@@ -33,7 +37,7 @@ namespace bscheiman.Common.Loggers {
         }
 
         public void Warn(string str) {
-            Trace.TraceWarning(str);
+            DiagDebug.WriteLine(str);
         }
     }
 }

@@ -48,7 +48,10 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static DateTime NextDateTime(this Random random, DateTime minValue, DateTime maxValue) {
-            return DateTime.FromOADate(random.NextDouble(minValue.ToOADate(), maxValue.ToOADate()));
+            var min = minValue.ToEpoch();
+            var max = maxValue.ToEpoch();
+
+            return ((long) random.NextDouble(min, max)).FromEpoch();
         }
 
         public static DateTime NextDateTime(this Random random) {

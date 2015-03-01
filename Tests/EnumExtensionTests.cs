@@ -1,8 +1,8 @@
 ﻿#region
-using System.ComponentModel;
+using bscheiman.Common.Attributes;
 using bscheiman.Common.Extensions;
 using NUnit.Framework;
-using Description = System.ComponentModel.DescriptionAttribute;
+using Description = bscheiman.Common.Attributes.DescriptionAttribute;
 
 #endregion
 
@@ -13,20 +13,20 @@ namespace bscheiman.Common.Tests {
     [TestFixture]
     public class EnumExtensionTests {
         public enum Test {
-            None,
-            [Description("Lalala")] Description
+            NoDesc,
+            [Description("Lalala")] HasDesc
         }
 
         [Test]
         public void GetAttributeOfType() {
-            var desc = Test.Description.GetAttributeOfType<Description>();
-            var noDesc = Test.None.GetAttributeOfType<Description>();
+            var desc = Test.HasDesc.GetAttributeOfType<Description>();
+            var noDesc = Test.NoDesc.GetAttributeOfType<Description>();
 
             Assert.IsNull(noDesc);
             Assert.IsNotNull(desc);
             Assert.IsNotEmpty(desc.Description);
 
-            Assert.AreEqual(desc.Description, Test.Description.GetDescription());
+            Assert.AreEqual(desc.Description, Test.HasDesc.GetDescription());
         }
     }
 

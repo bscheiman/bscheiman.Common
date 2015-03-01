@@ -1,11 +1,9 @@
 ﻿#region
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using bscheiman.Common.Helpers;
 using Newtonsoft.Json;
 
 #endregion
@@ -86,53 +84,12 @@ namespace bscheiman.Common.Extensions {
             if (obj == null)
                 throw new ArgumentNullException(parameterName);
         }
-        
+
         [DebuggerStepThrough]
-        public static Dictionary<string, object> ToDictionary(this object o) {
-            return
-                o.GetType()
-                 .GetProperties()
-                 .Where(propertyInfo => propertyInfo.GetIndexParameters().Length == 0)
-                 .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(o, null));
-        }
+        public static TV To<T, TV>(this T obj, TV defValue = default(TV)) {
+            obj.ThrowIfNull("obj");
 
-        /// <summary>
-        /// Generates a FormValues representation of the object. Useful for POST queries.
-        /// </summary>
-        /// <returns>The form values.</returns>
-        /// <param name="request">Object to reflect.</param>
-        /// <param name="separator">Separator for array-based fields.</param>
-        /// <param name="readAndWrite">Whether to use read/write properties or only read.</param>
-        [DebuggerStepThrough]
-        public static NameValueCollection ToFormValues(this object request, string separator = ",", bool readAndWrite = true) {
-            request.ThrowIfNull("request");
-
-            var properties =
-                request.GetType()
-                       .GetProperties()
-                       .Where(x => readAndWrite ? x.CanRead && x.CanWrite : x.CanRead)
-                       .Where(x => x.GetValue(request, null) != null)
-                       .ToDictionary(x => x.Name, x => x.GetValue(request, null));
-
-            var propertyNames = properties.Where(x => !(x.Value is string) && x.Value is IEnumerable).Select(x => x.Key).ToList();
-
-            foreach (string key in propertyNames) {
-                var valueType = properties[key].GetType();
-                var valueElemType = valueType.IsGenericType ? valueType.GetGenericArguments()[0] : valueType.GetElementType();
-
-                if (!valueElemType.IsPrimitive && valueElemType != typeof (string))
-                    continue;
-
-                var enumerable = properties[key] as IEnumerable;
-                properties[key] = string.Join(separator, enumerable.Cast<object>());
-            }
-
-            var values = new NameValueCollection();
-
-            foreach (var p in properties)
-                values.Add(p.Key, p.Value.ToString());
-
-            return values;
+            return Ignore.Exception(() => (TV) Convert.ChangeType(obj, typeof (TV)), defValue);
         }
 
         /// <summary>
@@ -143,41 +100,6 @@ namespace bscheiman.Common.Extensions {
         [DebuggerStepThrough]
         public static string ToJson(this object obj) {
             return JsonConvert.SerializeObject(obj);
-        }
-
-        /// <summary>
-        /// Generates a query-string-like representation of the object. Useful for REST queries.
-        /// </summary>
-        /// <returns>The query string.</returns>
-        /// <param name="request">Object to reflect.</param>
-        /// <param name="separator">Separator for array-based fields.</param>
-        /// <param name="readAndWrite">Whether to use read/write properties or only read.</param>
-        [DebuggerStepThrough]
-        public static string ToQueryString(this object request, string separator = ",", bool readAndWrite = true) {
-            request.ThrowIfNull("request");
-
-            var properties =
-                request.GetType()
-                       .GetProperties()
-                       .Where(x => readAndWrite ? x.CanRead && x.CanWrite : x.CanRead)
-                       .Where(x => x.GetValue(request, null) != null)
-                       .ToDictionary(x => x.Name, x => x.GetValue(request, null));
-
-            var propertyNames = properties.Where(x => !(x.Value is string) && x.Value is IEnumerable).Select(x => x.Key).ToList();
-
-            foreach (string key in propertyNames) {
-                var valueType = properties[key].GetType();
-                var valueElemType = valueType.IsGenericType ? valueType.GetGenericArguments()[0] : valueType.GetElementType();
-
-                if (valueElemType.IsPrimitive || valueElemType == typeof (string)) {
-                    var enumerable = properties[key] as IEnumerable;
-                    properties[key] = string.Join(separator, enumerable.Cast<object>());
-                }
-            }
-
-            return "?" +
-                   string.Join("&",
-                       properties.Select(x => string.Concat(Uri.EscapeDataString(x.Key), "=", Uri.EscapeDataString(x.Value.ToString()))));
         }
 
         [DebuggerStepThrough]
