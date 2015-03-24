@@ -115,5 +115,14 @@ namespace bscheiman.Common.Extensions {
         public static long ToEpoch(this DateTime dt) {
             return (long) (dt - DateUtil.Epoch).TotalSeconds;
         }
+
+        /// <summary>
+        /// Returns the specified DateTime as epoch (milliseconds since Jan 1, 1970)
+        /// </summary>
+        /// <returns>Epoch</returns>
+        /// <param name="dt">DateTime to use</param>
+        public static long ToEpochMilliseconds(this DateTime dt) {
+            return (long) (dt - DateUtil.Epoch).TotalMilliseconds;
+        }
     }
 }

@@ -12,6 +12,10 @@ namespace bscheiman.Common.Util {
             get { return DateTime.UtcNow.ToEpoch(); }
         }
 
+        public static long NowMilli {
+            get { return DateTime.UtcNow.ToEpochMilliseconds(); }
+        }
+
         public static DateTime NowDt {
             get { return DateTime.UtcNow; }
         }
