@@ -1,9 +1,10 @@
 ﻿#region
 using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Macs;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -65,8 +66,17 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static string ToHMAC256(this byte[] bytes, byte[] key) {
-            using (var hmac = new HMACSHA256(key))
-                return BitConverter.ToString(hmac.ComputeHash(bytes)).Replace("-", "").ToUpper();
+            var digest = new Sha256Digest();
+            var hmac = new HMac(digest);
+            hmac.Init(new KeyParameter(key));
+
+            foreach (byte b in bytes)
+                hmac.Update(b);
+
+            var resBuf = new byte[digest.GetDigestSize()];
+            hmac.DoFinal(resBuf, 0);
+
+            return BitConverter.ToString(resBuf).Replace("-", "").ToUpper();
         }
 
         /// <summary>

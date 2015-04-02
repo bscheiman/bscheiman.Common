@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Macs;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -118,7 +119,7 @@ namespace bscheiman.Common.Extensions {
 
             return encoding.GetBytes(str);
         }
-        
+
         [DebuggerStepThrough]
         public static void IfNullOrEmpty(this string str, Action act) {
             if (str.IsNullOrEmpty())
@@ -266,11 +267,7 @@ namespace bscheiman.Common.Extensions {
         /// <param name="str">Source string.</param>
         /// <param name="key">Key.</param>
         public static string ToHMAC256(this string str, string key) {
-            str.ThrowIfNull("str");
-            key.ThrowIfNull("key");
-
-            using (var hmac = new HMACSHA256(key.GetBytes(Encoding.UTF8)))
-                return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+            return str.ToHMAC256(Encoding.UTF8.GetBytes(key));
         }
 
         /// <summary>
@@ -283,8 +280,17 @@ namespace bscheiman.Common.Extensions {
             str.ThrowIfNull("str");
             key.ThrowIfNull("key");
 
-            using (var hmac = new HMACSHA256(key))
-                return BitConverter.ToString(hmac.ComputeHash(str.GetBytes(Encoding.UTF8))).Replace("-", "").ToUpper();
+            var digest = new Sha256Digest();
+            var hmac = new HMac(digest);
+            hmac.Init(new KeyParameter(key));
+
+            foreach (byte b in Encoding.UTF8.GetBytes(str))
+                hmac.Update(b);
+
+            var resBuf = new byte[digest.GetDigestSize()];
+            hmac.DoFinal(resBuf, 0);
+
+            return BitConverter.ToString(resBuf).Replace("-", "").ToUpper();
         }
 
         [DebuggerStepThrough]
