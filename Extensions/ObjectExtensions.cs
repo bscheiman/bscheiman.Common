@@ -93,7 +93,7 @@ namespace bscheiman.Common.Extensions {
         }
 
         /// <summary>
-        /// Returns a JSON version of the string
+        /// Returns a JSON version of the object
         /// </summary>
         /// <param name="obj">Object to serialize</param>
         /// <returns>JSON string</returns>
