@@ -1,6 +1,8 @@
 ﻿#region
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using bscheiman.Common.Extensions;
 using Org.BouncyCastle.Crypto;
@@ -22,6 +24,51 @@ namespace bscheiman.Common.Crypto {
         private const int NonceBitSize = 128;
         private const int SaltBitSize = 128;
         private static readonly SecureRandom Random = new SecureRandom();
+
+        internal static byte[] Crypt(bool isEncrypt, string type, byte[] key, byte[] input) {
+            var cipher = CipherUtilities.GetCipher(type);
+            var cipherInfo = type.Split(new[] {
+                '/'
+            }, 3);
+
+            if (cipher == null)
+                return new byte[0];
+            
+            cipher.Init(isEncrypt, ParameterUtilities.CreateKeyParameter(cipherInfo[0], key));
+            var size = cipher.GetOutputSize(key.Length);
+            var list = new List<byte>();
+            var blocks = input.Select((x, i) => new {
+                Key = i / size,
+                Value = x
+            }).GroupBy(x => x.Key, x => x.Value, (k, g) => g.ToArray()).ToArray();
+
+            for (int i = 0; i < blocks.Length; i++) {
+                var bResult = new byte[size];
+                var tam = cipher.ProcessBytes(blocks[i], 0, blocks[i].Length, bResult, 0);
+
+                if (i == blocks.Length - 1)
+                    cipher.DoFinal(blocks[i], tam);
+
+                list.AddRange(bResult);
+            }
+
+            return list.ToArray();
+        }
+
+        public static byte[] Decrypt(string type, byte[] key, byte[] input) {
+            return Crypt(false, type, key, input);
+        }
+
+        public static byte[] Encrypt(string type, byte[] key, byte[] input) {
+            return Crypt(true, type, key, input);
+        }
+
+        internal static byte[] NewKey() {
+            var key = new byte[KeyBitSize / 8];
+            Random.NextBytes(key);
+
+            return key;
+        }
 
         public static string SimpleDecrypt(string encryptedMessage, byte[] key, int nonSecretPayloadLength = 0) {
             encryptedMessage.ThrowIfNullOrEmpty("encryptedMessage");
@@ -52,7 +99,7 @@ namespace bscheiman.Common.Crypto {
                 var plainText = new byte[cipher.GetOutputSize(cipherText.Length)];
 
                 try {
-                    int len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, plainText, 0);
+                    var len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, plainText, 0);
                     cipher.DoFinal(plainText, len);
                 } catch (InvalidCipherTextException) {
                     return null;
@@ -115,7 +162,7 @@ namespace bscheiman.Common.Crypto {
             cipher.Init(true, parameters);
 
             var cipherText = new byte[cipher.GetOutputSize(secretMessage.Length)];
-            int len = cipher.ProcessBytes(secretMessage, 0, secretMessage.Length, cipherText, 0);
+            var len = cipher.ProcessBytes(secretMessage, 0, secretMessage.Length, cipherText, 0);
             cipher.DoFinal(cipherText, len);
 
             using (var combinedStream = new MemoryStream()) {
@@ -161,13 +208,6 @@ namespace bscheiman.Common.Crypto {
             Array.Copy(salt, 0, payload, nonSecretPayload.Length, salt.Length);
 
             return SimpleEncrypt(secretMessage, key.GetKey(), payload);
-        }
-
-        internal static byte[] NewKey() {
-            var key = new byte[KeyBitSize / 8];
-            Random.NextBytes(key);
-
-            return key;
         }
     }
 }
