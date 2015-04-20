@@ -33,7 +33,7 @@ namespace bscheiman.Common.Crypto {
 
             if (cipher == null)
                 return new byte[0];
-            
+
             cipher.Init(isEncrypt, ParameterUtilities.CreateKeyParameter(cipherInfo[0], key));
             var size = cipher.GetOutputSize(key.Length);
             var list = new List<byte>();
@@ -42,7 +42,7 @@ namespace bscheiman.Common.Crypto {
                 Value = x
             }).GroupBy(x => x.Key, x => x.Value, (k, g) => g.ToArray()).ToArray();
 
-            for (int i = 0; i < blocks.Length; i++) {
+            for (var i = 0; i < blocks.Length; i++) {
                 var bResult = new byte[size];
                 var tam = cipher.ProcessBytes(blocks[i], 0, blocks[i].Length, bResult, 0);
 
@@ -59,7 +59,15 @@ namespace bscheiman.Common.Crypto {
             return Crypt(false, type, key, input);
         }
 
+        public static byte[] Decrypt(string type, byte[] key, byte[] iv, byte[] input) {
+            return Crypt(false, type, key, input);
+        }
+
         public static byte[] Encrypt(string type, byte[] key, byte[] input) {
+            return Crypt(true, type, key, input);
+        }
+
+        public static byte[] Encrypt(string type, byte[] key, byte[] iv, byte[] input) {
             return Crypt(true, type, key, input);
         }
 
