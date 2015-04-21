@@ -35,24 +35,12 @@ namespace bscheiman.Common.Crypto {
                 return new byte[0];
 
             cipher.Init(isEncrypt, ParameterUtilities.CreateKeyParameter(cipherInfo[0], key));
-            var size = cipher.GetOutputSize(key.Length);
-            var list = new List<byte>();
-            var blocks = input.Select((x, i) => new {
-                Key = i / size,
-                Value = x
-            }).GroupBy(x => x.Key, x => x.Value, (k, g) => g.ToArray()).ToArray();
 
-            for (var i = 0; i < blocks.Length; i++) {
-                var bResult = new byte[size];
-                var tam = cipher.ProcessBytes(blocks[i], 0, blocks[i].Length, bResult, 0);
+            var bResult = new byte[cipher.GetOutputSize(input.Length)];
+            var tam = cipher.ProcessBytes(input, 0, input.Length, bResult, 0);
+            cipher.DoFinal(bResult, tam);
 
-                if (i == blocks.Length - 1)
-                    cipher.DoFinal(blocks[i], tam);
-
-                list.AddRange(bResult);
-            }
-
-            return list.ToArray();
+            return bResult;
         }
 
         public static byte[] Decrypt(string type, byte[] key, byte[] input) {
