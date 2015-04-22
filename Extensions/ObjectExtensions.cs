@@ -96,10 +96,11 @@ namespace bscheiman.Common.Extensions {
         /// Returns a JSON version of the object
         /// </summary>
         /// <param name="obj">Object to serialize</param>
+        /// <param name="settings">Custom settings</param>
         /// <returns>JSON string</returns>
         [DebuggerStepThrough]
-        public static string ToJson(this object obj) {
-            return JsonConvert.SerializeObject(obj);
+        public static string ToJson(this object obj, JsonSerializerSettings settings = null) {
+            return settings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, settings);
         }
 
         [DebuggerStepThrough]
