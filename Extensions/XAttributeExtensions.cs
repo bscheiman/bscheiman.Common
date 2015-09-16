@@ -14,7 +14,7 @@ namespace bscheiman.Common.Extensions {
             if (attr == null)
                 return defaultValue;
 
-            var str = attr.Value;
+            string str = attr.Value;
             var type = typeof (T);
 
             return (T) Convert.ChangeType(str, type);

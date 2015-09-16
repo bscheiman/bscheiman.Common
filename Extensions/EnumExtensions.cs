@@ -19,6 +19,7 @@ namespace bscheiman.Common.Extensions {
             var type = enumVal.GetType();
             var info = type.GetTypeInfo();
             string name = Enum.GetName(type, enumVal);
+
             return info.GetDeclaredField(name).GetCustomAttributes(false).OfType<TAttribute>().SingleOrDefault();
         }
 

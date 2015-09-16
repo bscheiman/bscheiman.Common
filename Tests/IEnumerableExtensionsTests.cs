@@ -12,9 +12,7 @@ namespace bscheiman.Common.Tests {
 
     [TestFixture]
     public class IEnumerableExtensionsTests {
-        private readonly string[] str = {
-            "foo", "bar", "fizz", "buzz"
-        };
+        private readonly string[] str = { "foo", "bar", "fizz", "buzz" };
 
         [Test]
         public void EmptyIfNull() {
@@ -50,14 +48,12 @@ namespace bscheiman.Common.Tests {
 
         [Test]
         public void Join1() {
-            var blah = new[] {
-                new {
-                    Name = "asd"
-                },
+            var blah = new[] { new {
+                Name = "asd"
+            },
                 new {
                     Name = "bleh"
-                }
-            };
+                } };
 
             Assert.AreEqual("asd-bleh", blah.Join(p => p.Name, "-"));
         }

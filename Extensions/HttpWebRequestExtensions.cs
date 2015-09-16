@@ -12,8 +12,8 @@ namespace bscheiman.Common.Extensions {
             new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
 
         private static readonly string[] RestrictedHeaders = {
-            "Accept", "Connection", "Content-Length", "Content-Type", "Date", "Expect", "Host", "If-Modified-Since", "Range", "Referer",
-            "Transfer-Encoding", "User-Agent", "Proxy-Connection"
+            "Accept", "Connection", "Content-Length", "Content-Type", "Date", "Expect",
+            "Host", "If-Modified-Since", "Range", "Referer", "Transfer-Encoding", "User-Agent", "Proxy-Connection"
         };
 
         static HttpWebRequestExtensions() {

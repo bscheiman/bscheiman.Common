@@ -1,6 +1,4 @@
 ﻿#region
-using System;
-using bscheiman.Common.Extensions;
 using NUnit.Framework;
 
 #endregion

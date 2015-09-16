@@ -60,9 +60,7 @@ namespace bscheiman.Common.Tests {
 
         [TestFixtureSetUp]
         public void Setup() {
-            Log.Setup(new LoggerParameters {
-                LogEntriesToken = "c460cd9d-e8e4-43c3-a27e-d99239f2fa47"
-            });
+            Log.Setup(new LoggerParameters());
 
             Log.Setup();
         }

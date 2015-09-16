@@ -9,7 +9,7 @@ namespace bscheiman.Common.Extensions {
             list.ThrowIfNull("list");
             values.ThrowIfNull("values");
 
-            foreach (TS value in values)
+            foreach (var value in values)
                 list.Add(value);
         }
     }

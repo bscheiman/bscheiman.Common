@@ -78,9 +78,7 @@ namespace bscheiman.Common.Tests {
 
         [Test]
         public void GetBytes([Values("lalala", "ñasdasd", "123123", "")] string str) {
-            foreach (var encoding in new[] {
-                Encoding.UTF8, Encoding.Unicode
-            }) {
+            foreach (var encoding in new[] { Encoding.UTF8, Encoding.Unicode }) {
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes());
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(encoding));
                 Assert.Throws<ArgumentNullException>(() => NullString.GetBytes(null));
@@ -126,9 +124,7 @@ namespace bscheiman.Common.Tests {
             Assert.Throws<ArgumentNullException>(() => NullString.SplitRe(""));
             Assert.Throws<ArgumentNullException>(() => "".SplitRe(null));
 
-            Assert.AreEqual(new[] {
-                "1", "2", "3"
-            }, "1yay2yay3".SplitRe("yay"));
+            Assert.AreEqual(new[] { "1", "2", "3" }, "1yay2yay3".SplitRe("yay"));
         }
 
         [Test]
@@ -139,12 +135,8 @@ namespace bscheiman.Common.Tests {
             Assert.Throws<ArgumentNullException>(() => ((string) null).SplitRemoveEmptyEntries());
             Assert.Throws<ArgumentNullException>(() => "".SplitRemoveEmptyEntries(null));
 
-            Assert.AreEqual(new[] {
-                "hey", "hi", "howdy"
-            }, str.SplitRemoveEmptyEntries());
-            Assert.AreEqual(new[] {
-                "hey", "hi", "howdy"
-            }, str2.SplitRemoveEmptyEntries('-'));
+            Assert.AreEqual(new[] { "hey", "hi", "howdy" }, str.SplitRemoveEmptyEntries());
+            Assert.AreEqual(new[] { "hey", "hi", "howdy" }, str2.SplitRemoveEmptyEntries('-'));
         }
 
         [Test]
@@ -223,8 +215,8 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual(0, "0".ToInt32());
             Assert.AreEqual(0, "-".ToInt32());
             Assert.AreEqual(0, "".ToInt32());
-            Assert.AreEqual(Int32.MaxValue, Int32.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt32());
-            Assert.AreEqual(Int32.MinValue, Int32.MinValue.ToString(CultureInfo.InvariantCulture).ToInt32());
+            Assert.AreEqual(int.MaxValue, int.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt32());
+            Assert.AreEqual(int.MinValue, int.MinValue.ToString(CultureInfo.InvariantCulture).ToInt32());
         }
 
         [Test]
@@ -232,8 +224,8 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual(0, "0".ToInt64());
             Assert.AreEqual(0, "-".ToInt64());
             Assert.AreEqual(0, "".ToInt64());
-            Assert.AreEqual(Int64.MaxValue, Int64.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt64());
-            Assert.AreEqual(Int64.MinValue, Int64.MinValue.ToString(CultureInfo.InvariantCulture).ToInt64());
+            Assert.AreEqual(long.MaxValue, long.MaxValue.ToString(CultureInfo.InvariantCulture).ToInt64());
+            Assert.AreEqual(long.MinValue, long.MinValue.ToString(CultureInfo.InvariantCulture).ToInt64());
         }
 
         [Test, Sequential]

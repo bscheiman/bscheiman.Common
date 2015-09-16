@@ -48,8 +48,8 @@ namespace bscheiman.Common.Extensions {
         }
 
         public static DateTime NextDateTime(this Random random, DateTime minValue, DateTime maxValue) {
-            var min = minValue.ToEpoch();
-            var max = maxValue.ToEpoch();
+            long min = minValue.ToEpoch();
+            long max = maxValue.ToEpoch();
 
             return ((long) random.NextDouble(min, max)).FromEpoch();
         }
@@ -70,8 +70,7 @@ namespace bscheiman.Common.Extensions {
             double halfDifference = (maxValue * 0.5) - (minValue * 0.5);
 
             return random.NextBool()
-                ? minValue + (random.NextDouble() * halfDifference)
-                : (minValue + halfDifference) + (random.NextDouble() * halfDifference);
+                ? minValue + (random.NextDouble() * halfDifference) : (minValue + halfDifference) + (random.NextDouble() * halfDifference);
         }
 
         public static string NextString(this Random random, int numChars, CharType mode) {

@@ -27,18 +27,14 @@ namespace bscheiman.Common.Tests {
         public void Range() {
             Assert.IsEmpty(Zero.Range(-2));
 
-            Assert.AreEqual(new[] {
-                0, 1, 2, 3, 4
-            }, Zero.Range(5).ToArray());
+            Assert.AreEqual(new[] { 0, 1, 2, 3, 4 }, Zero.Range(5).ToArray());
         }
 
         [Test]
         public void RangeInclusive() {
             Assert.IsEmpty(Zero.RangeInclusive(-2));
 
-            Assert.AreEqual(new[] {
-                0, 1, 2, 3, 4, 5
-            }, Zero.RangeInclusive(5).ToArray());
+            Assert.AreEqual(new[] { 0, 1, 2, 3, 4, 5 }, Zero.RangeInclusive(5).ToArray());
         }
     }
 

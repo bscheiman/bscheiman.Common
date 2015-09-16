@@ -13,11 +13,7 @@ namespace bscheiman.Common.Util {
         internal static readonly List<ILogger> Loggers = new List<ILogger>();
 
         internal static LoggerParameters DefaultConfig {
-            get {
-                return new LoggerParameters {
-                    LogEntriesToken = ""
-                };
-            }
+            get { return new LoggerParameters(); }
         }
 
         private static bool Initialized { get; set; }
@@ -144,7 +140,7 @@ namespace bscheiman.Common.Util {
             Setup(DefaultConfig);
         }
 
-        public static void Setup(LoggerParameters parms) {
+        public static void Setup(LoggerParameters parms, params ILogger[] extraLoggers) {
             parms.ThrowIfNull("parms");
 
             if (Initialized) {
@@ -153,9 +149,15 @@ namespace bscheiman.Common.Util {
                 return;
             }
 
-            foreach (var logger in new ILogger[] {
-                new DebugLogger(), new LogEntriesLogger()
-            }.Where(logger => logger != null && logger.CanUse(parms)))
+            var loggers = new List<ILogger> {
+                new DebugLogger(),
+                new LogEntriesLogger()
+            };
+
+            if (extraLoggers != null)
+                loggers.AddRange(extraLoggers);
+
+            foreach (var logger in loggers.Where(logger => logger != null && logger.CanUse(parms)))
                 Loggers.Add(logger);
 
             foreach (var l in Loggers)

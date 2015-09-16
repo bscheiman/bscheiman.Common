@@ -38,8 +38,8 @@ namespace bscheiman.Common.Tests {
 
         [Test, Sequential]
         public void ToHMAC256String([Values("Jefe")] string key,
-            [Values("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")] string digest,
-            [Values("what do ya want for nothing?")] string msg) {
+                                    [Values("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")] string digest,
+                                    [Values("what do ya want for nothing?")] string msg) {
             Assert.AreEqual(digest.ToUpper(), msg.GetBytes().ToHMAC256(key));
         }
     }

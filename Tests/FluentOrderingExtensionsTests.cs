@@ -1,5 +1,4 @@
 ﻿#region
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using bscheiman.Common.Extensions;

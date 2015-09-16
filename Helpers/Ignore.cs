@@ -29,5 +29,29 @@ namespace bscheiman.Common.Helpers {
             } catch {
             }
         }
+
+        public static void Exception<T>(Action act) where T : Exception {
+            try {
+                act();
+            } catch (T) {
+            }
+        }
+
+        public static void Exception<T, TV>(Action act) where T : Exception where TV : Exception {
+            try {
+                act();
+            } catch (T) {
+            } catch (TV) {
+            }
+        }
+
+        public static void Exception<T, TV, TTV>(Action act) where T : Exception where TV : Exception where TTV : Exception {
+            try {
+                act();
+            } catch (T) {
+            } catch (TV) {
+            } catch (TTV) {
+            }
+        }
     }
 }

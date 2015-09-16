@@ -211,9 +211,7 @@ namespace bscheiman.Common.Extensions {
 
         [DebuggerStepThrough]
         public static IEnumerable<string> SplitRemoveEmptyEntries(this string str, char separator) {
-            return str.SplitRemoveEmptyEntries(new[] {
-                separator
-            });
+            return str.SplitRemoveEmptyEntries(new[] { separator });
         }
 
         [DebuggerStepThrough]

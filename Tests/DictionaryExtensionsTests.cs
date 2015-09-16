@@ -21,9 +21,9 @@ namespace bscheiman.Common.Tests {
             Assert.AreEqual(1, TestDictionary.Get("blah"));
             Assert.AreEqual(default(int), TestDictionary.Get("bleh"));
 
-            TestDictionary["blah"] = Int32.MaxValue;
+            TestDictionary["blah"] = int.MaxValue;
 
-            Assert.AreEqual(Int32.MaxValue, TestDictionary.Get("blah"));
+            Assert.AreEqual(int.MaxValue, TestDictionary.Get("blah"));
         }
     }
 }
