@@ -40,7 +40,7 @@ namespace bscheiman.Common.Loggers {
             await Send(str);
         }
 
-        internal async Task<bool> Send(string text, string channel = "#logs", string username = "papaia.co", string emoji = ":tram:") {
+        internal async Task<bool> Send(string text, string channel = "", string username = "", string emoji = ":tram:") {
             using (var httpClient = new HttpClient()) {
                 var obj = new {
                     channel,
@@ -51,7 +51,7 @@ namespace bscheiman.Common.Loggers {
 
                 var res =
                     await
-                        httpClient.PostAsync(string.Format("https://hooks.slack.com/services/{0}", Token), new StringContent(obj.ToJson()));
+                        httpClient.PostAsync($"https://hooks.slack.com/services/{Token}", new StringContent(obj.ToJson()));
                 string msg = await res.Content.ReadAsStringAsync();
 
                 return msg == "ok";

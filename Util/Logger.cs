@@ -12,9 +12,7 @@ namespace bscheiman.Common.Util {
     public static class Log {
         internal static readonly List<ILogger> Loggers = new List<ILogger>();
 
-        internal static LoggerParameters DefaultConfig {
-            get { return new LoggerParameters(); }
-        }
+        internal static LoggerParameters DefaultConfig => new LoggerParameters();
 
         private static bool Initialized { get; set; }
 

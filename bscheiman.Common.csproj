@@ -68,6 +68,7 @@
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
+    <Compile Include="Loggers\FuncLogger.cs" />
     <Compile Include="Loggers\SlackLogger.cs" />
     <Compile Include="Tests\ByteExtensionsTests.cs" />
     <Compile Include="Tests\DictionaryExtensionsTests.cs" />
