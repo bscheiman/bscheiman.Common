@@ -1,7 +1,5 @@
 ﻿#region
 using System;
-using System.Threading.Tasks;
-using bscheiman.Common.Loggers;
 using bscheiman.Common.Objects;
 using bscheiman.Common.Util;
 using NUnit.Framework;
@@ -67,9 +65,6 @@ namespace bscheiman.Common.Tests {
 
         [TestFixtureTearDown]
         public async void TearDown() {
-            while (LogEntriesLogger.Queue.Count > 0)
-                await Task.Delay(1500);
-
             Log.Teardown();
         }
 

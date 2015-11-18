@@ -148,8 +148,7 @@ namespace bscheiman.Common.Util {
             }
 
             var loggers = new List<ILogger> {
-                new DebugLogger(),
-                new LogEntriesLogger()
+                new DebugLogger()
             };
 
             if (extraLoggers != null)
